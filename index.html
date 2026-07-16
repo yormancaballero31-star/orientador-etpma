@@ -3,333 +3,621 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tu Orientador Online - Test Vocacional</title>
-    <!-- Tailwind CSS para un diseño moderno y responsivo -->
+    <title>Tu Orientador Online ETPMA</title>
+    <!-- Tailwind CSS para diseño moderno -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- html2pdf.js para la generación robusta del PDF sin páginas en blanco -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Librerías para exportar a PDF y Excel de forma nativa -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
     <style>
-        /* Evita que los elementos se corten a la mitad en el PDF */
-        .evitar-corte {
-            page-break-inside: avoid;
-            break-inside: avoid;
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3f4f6;
+        }
+        /* Fusiona el fondo blanco de los logos con el fondo del contenedor */
+        .logo-blend {
+            mix-blend-mode: multiply;
+        }
+        /* Patrón geométrico digital para el fondo del panel motivacional */
+        .tech-pattern {
+            background-image: radial-gradient(rgba(56, 189, 248, 0.15) 1px, transparent 0);
+            background-size: 16px 16px;
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col justify-between">
+<body class="min-h-screen flex items-center justify-center p-4">
 
-    <!-- Encabezado -->
-    <header class="bg-blue-600 text-white py-6 shadow-md">
-        <div class="container mx-auto px-4 text-center">
-            <h1 class="text-3xl font-bold tracking-tight">Tu Orientador Online</h1>
-            <p class="text-blue-100 mt-2 text-sm md:text-base">Descubre tu perfil vocacional y profesional</p>
-        </div>
-    </header>
-
-    <!-- Contenido Principal -->
-    <main class="container mx-auto px-4 py-8 flex-grow max-w-3xl">
+    <!-- Tarjeta Principal de Gran Presencia (Ancha y Espaciosa) -->
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden border border-slate-200">
         
-        <!-- Tarjeta del Test -->
-        <div id="pantalla-test" class="bg-white rounded-xl shadow-md p-6 md:p-8 border border-slate-100">
-            <div class="mb-6">
-                <h2 class="text-xl font-bold text-slate-700">Cuestionario de Intereses Profesionales</h2>
-                <p class="text-slate-500 text-sm mt-1">Responde con honestidad a las siguientes preguntas seleccionando la opción que más se adapte a ti.</p>
-            </div>
-
-            <form id="formulario-test" class="space-y-6">
-                <!-- Pregunta 1 -->
-                <div class="border-b border-slate-100 pb-4">
-                    <p class="font-medium text-slate-800 mb-3">1. ¿Qué tipo de actividades te llaman más la atención realizar en tu día a día?</p>
-                    <div class="space-y-2">
-                        <label class="flex items-center space-x-3 p-2 rounded hover:bg-slate-50 cursor-pointer">
-                            <input type="radio" name="p1" value="informatica" class="text-blue-600 focus:ring-blue-500" required>
-                            <span>Resolver problemas lógicos, programar aplicaciones o entender cómo funcionan los sistemas computacionales.</span>
-                        </label>
-                        <label class="flex items-center space-x-3 p-2 rounded hover:bg-slate-50 cursor-pointer">
-                            <input type="radio" name="p1" value="salud" class="text-blue-600 focus:ring-blue-500">
-                            <span>Aprender sobre el cuerpo humano, primeros auxilios y cómo cuidar el bienestar físico de las personas.</span>
-                        </label>
-                        <label class="flex items-center space-x-3 p-2 rounded hover:bg-slate-50 cursor-pointer">
-                            <input type="radio" name="p1" value="economia" class="text-blue-600 focus:ring-blue-500">
-                            <span>Organizar recursos, administrar presupuestos, llevar cuentas o planificar un emprendimiento comercial.</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Pregunta 2 -->
-                <div class="border-b border-slate-100 pb-4">
-                    <p class="font-medium text-slate-800 mb-3">2. Si tuvieras que liderar un proyecto escolar, ¿en qué área preferirías enfocarte?</p>
-                    <div class="space-y-2">
-                        <label class="flex items-center space-x-3 p-2 rounded hover:bg-slate-50 cursor-pointer">
-                            <input type="radio" name="p2" value="informatica" class="text-blue-600 focus:ring-blue-500" required>
-                            <span>Diseñar el sitio web del proyecto o automatizar las tareas del equipo usando herramientas digitales.</span>
-                        </label>
-                        <label class="flex items-center space-x-3 p-2 rounded hover:bg-slate-50 cursor-pointer">
-                            <input type="radio" name="p2" value="salud" class="text-blue-600 focus:ring-blue-500">
-                            <span>Garantizar las condiciones sanitarias, la seguridad de los integrantes o coordinar jornadas de apoyo social.</span>
-                        </label>
-                        <label class="flex items-center space-x-3 p-2 rounded hover:bg-slate-50 cursor-pointer">
-                            <input type="radio" name="p2" value="economia" class="text-blue-600 focus:ring-blue-500">
-                            <span>Estructurar los costos, buscar financiamiento o distribuir el presupuesto asignado de forma eficiente.</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Pregunta 3 -->
-                <div class="border-b border-slate-100 pb-4">
-                    <p class="font-medium text-slate-800 mb-3">3. ¿Cuál de estos entornos laborales te parece más motivador o estimulante?</p>
-                    <div class="space-y-2">
-                        <label class="flex items-center space-x-3 p-2 rounded hover:bg-slate-50 cursor-pointer">
-                            <input type="radio" name="p3" value="informatica" class="text-blue-600 focus:ring-blue-500" required>
-                            <span>Una oficina de desarrollo tecnológico o un laboratorio de innovación de software.</span>
-                        </label>
-                        <label class="flex items-center space-x-3 p-2 rounded hover:bg-slate-50 cursor-pointer">
-                            <input type="radio" name="p3" value="salud" class="text-blue-600 focus:ring-blue-500">
-                            <span>Un centro de salud, hospital o consultorio interactuando y ayudando directamente a pacientes.</span>
-                        </label>
-                        <label class="flex items-center space-x-3 p-2 rounded hover:bg-slate-50 cursor-pointer">
-                            <input type="radio" name="p3" value="economia" class="text-blue-600 focus:ring-blue-500">
-                            <span>Un departamento administrativo, una entidad financiera o liderando tu propia consultoría comercial.</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="text-center pt-4">
-                    <button type="submit" class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow transition-colors duration-150">
-                        Procesar Resultados
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <!-- SECCIÓN DEL REPORTE (Inicialmente oculta con 'hidden', pero estructurada de manera segura) -->
-        <div id="seccion-reporte" class="hidden space-y-6">
+        <!-- Encabezado de Dos Columnas: Izquierda (Logo/Título) - Derecha (Ilustración/Frase Motivacional) -->
+        <div class="bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a] text-white relative grid grid-cols-1 md:grid-cols-12 border-b-4 border-sky-500">
             
-            <!-- CONTENEDOR ESPECÍFICO QUE SE ENVIARÁ AL PDF -->
-            <div id="contenido-pdf" class="bg-white p-8 rounded-xl shadow-md border border-slate-200">
+            <!-- Bloque Izquierdo: Identidad de la App (7/12 de espacio) -->
+            <div class="md:col-span-7 p-8 flex flex-col sm:flex-row items-center gap-6">
+                <!-- Contenedor del Escudo Oficial (Fusión sin fondo blanco) -->
+                <div class="w-24 h-28 bg-[#f8fafc] p-2.5 rounded-2xl flex items-center justify-center shrink-0 shadow-inner">
+                    <img src="logo.jpg" alt="Escudo E.T.P. María Auxiliadora" class="max-w-full max-h-full object-contain logo-blend">
+                </div>
                 
-                <!-- Encabezado del PDF -->
-                <div class="border-b-2 border-blue-600 pb-4 mb-6 flex justify-between items-center">
-                    <div>
-                        <h2 class="text-2xl font-bold text-slate-800 tracking-wide">REPORTE DE ORIENTACIÓN VOCACIONAL</h2>
-                        <p class="text-xs text-slate-500 uppercase tracking-widest mt-1">Evaluación de Aptitudes Académicas</p>
+                <!-- Título Principal -->
+                <div class="text-center sm:text-left flex-grow">
+                    <div class="text-[10px] bg-sky-500/20 text-sky-300 font-extrabold px-2.5 py-1 rounded-full uppercase tracking-widest inline-block mb-2">
+                        E.T.P. María Auxiliadora • Altamira
                     </div>
-                    <div class="text-right">
-                        <span class="text-xs bg-blue-100 text-blue-800 font-semibold px-2.5 py-1 rounded">CAI - Técnico</span>
-                    </div>
-                </div>
-
-                <!-- Datos del Estudiante (Opcionales / Dinámicos) -->
-                <div class="grid grid-cols-2 gap-4 mb-6 text-sm bg-slate-50 p-4 rounded-lg">
-                    <div>
-                        <p class="text-slate-500 font-medium">Fecha de Emisión:</p>
-                        <p id="fecha-reporte" class="font-semibold text-slate-700"></p>
-                    </div>
-                    <div>
-                        <p class="text-slate-500 font-medium">Estatus del Test:</p>
-                        <p class="font-semibold text-emerald-600">Completado con Éxito</p>
-                    </div>
-                </div>
-
-                <!-- Perfil Predominante (Se inyecta dinámicamente) -->
-                <div class="evitar-corte mb-6">
-                    <h3 class="text-lg font-bold text-slate-700 mb-2 border-l-4 border-blue-500 pl-2">Resultado Predominante</h3>
-                    <div id="area-resultado" class="p-4 bg-blue-50 text-blue-900 rounded-lg border border-blue-100">
-                        <!-- El texto se genera dinámicamente -->
-                    </div>
-                </div>
-
-                <!-- Detalle por Áreas Evaluadas -->
-                <div class="evitar-corte">
-                    <h3 class="text-lg font-bold text-slate-700 mb-3 border-l-4 border-blue-500 pl-2">Distribución de Afinidades</h3>
-                    <div class="space-y-4">
-                        <!-- Informática -->
-                        <div>
-                            <div class="flex justify-between text-sm font-medium text-slate-600 mb-1">
-                                <span>Informática y Computación</span>
-                                <span id="pct-informatica">0%</span>
-                            </div>
-                            <div class="w-full bg-slate-200 rounded-full h-2.5">
-                                <div id="barra-informatica" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
-                            </div>
-                        </div>
-
-                        <!-- Salud -->
-                        <div>
-                            <div class="flex justify-between text-sm font-medium text-slate-600 mb-1">
-                                <span>Ciencias de la Salud (Enfermería / Registro y Estadística)</span>
-                                <span id="pct-salud">0%</span>
-                            </div>
-                            <div class="w-full bg-slate-200 rounded-full h-2.5">
-                                <div id="barra-salud" class="bg-emerald-600 h-2.5 rounded-full" style="width: 0%"></div>
-                            </div>
-                        </div>
-
-                        <!-- Economía -->
-                        <div>
-                            <div class="flex justify-between text-sm font-medium text-slate-600 mb-1">
-                                <span>Economía Social (Administración / Contabilidad)</span>
-                                <span id="pct-economia">0%</span>
-                            </div>
-                            <div class="w-full bg-slate-200 rounded-full h-2.5">
-                                <div id="barra-economia" class="bg-amber-500 h-2.5 rounded-full" style="width: 0%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Nota de Cierre e Imprimibilidad -->
-                <div class="evitar-corte mt-8 pt-6 border-t border-slate-100 text-center text-xs text-slate-400">
-                    <p>Este informe es de carácter meramente orientativo y psicopedagógico.</p>
-                    <p class="mt-1">© 2026 Tu Orientador Online. Todos los derechos reservados.</p>
+                    <h1 class="text-3xl sm:text-4xl font-black tracking-tight leading-none uppercase">
+                        <span class="text-white text-2xl sm:text-3xl">Tu Orientador</span><br>
+                        <span class="bg-clip-text text-transparent bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-300">
+                            Online ETPMA
+                        </span>
+                    </h1>
+                    <p class="text-[11px] text-slate-400 mt-2 font-medium tracking-wide uppercase">Encuentra tu camino en Salud o Economía Social</p>
                 </div>
             </div>
 
-            <!-- Botones de Acción (Fuera del contenedor del PDF para que no salgan impresos) -->
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center pt-2">
-                <button id="btn-pdf" onclick="descargarReportePDF()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-8 rounded-lg shadow-md flex items-center justify-center space-x-2 transition-transform active:scale-95">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    <span>Descargar Reporte PDF</span>
-                </button>
-                <button onclick="reiniciarTest()" class="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-3 px-8 rounded-lg transition-colors">
-                    Realizar de nuevo
-                </button>
+            <!-- Bloque Derecho: Ilustración Digital y Frase Motivacional -->
+            <div class="md:col-span-5 border-t md:border-t-0 md:border-l border-slate-700/50 relative overflow-hidden flex items-center justify-center p-6 min-h-[140px] md:min-h-0 tech-pattern">
+                <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-sky-500/20 rounded-full blur-3xl"></div>
+                <div class="absolute -left-10 -top-10 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl"></div>
+                
+                <div class="text-center md:text-left z-10 max-w-xs">
+                    <div class="flex items-center justify-center md:justify-start gap-2 text-sky-400 mb-1.5 font-bold text-xs uppercase tracking-widest">
+                        <span class="animate-pulse">⚡</span> <span id="motivo-tag">Área de Inspiración</span>
+                    </div>
+                    <p id="motivo-texto" class="text-xs text-slate-300 italic font-medium leading-relaxed">
+                        "El único modo de hacer un gran trabajo es amar lo que haces. Tu futuro profesional empieza con la decisión que tomas hoy."
+                    </p>
+                </div>
             </div>
         </div>
 
-    </main>
-
-    <!-- Pie de página -->
-    <footer class="bg-slate-800 text-slate-400 py-4 mt-8 border-t border-slate-700">
-        <div class="container mx-auto px-4 text-center text-xs">
-            <p>Diseñado para Plataformas Educativas de Escuelas Técnicas.</p>
-        </div>
-    </footer>
-
-    <!-- LÓGICA DE CONTROL DE LA APLICACIÓN -->
-    <script>
-        // Procesar formulario de test
-        document.getElementById('formulario-test').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Capturar respuestas seleccionadas
-            const respuestas = {
-                p1: document.querySelector('input[name="p1"]:checked').value,
-                p2: document.querySelector('input[name="p2"]:checked').value,
-                p3: document.querySelector('input[name="p3"]:checked').value
-            };
-
-            // Contar puntuaciones
-            let puntuacion = { informatica: 0, salud: 0, economia: 0 };
-            puntuacion[respuestas.p1]++;
-            puntuacion[respuestas.p2]++;
-            puntuacion[respuestas.p3]++;
-
-            const totalPreguntas = 3;
+        <!-- Pantalla 1: Registro del Estudiante -->
+        <div id="pantalla-registro" class="p-8">
+            <h2 class="text-xl font-bold text-slate-800 mb-2">¡Bienvenido al portal del futuro! 🚀</h2>
+            <p class="text-slate-600 text-sm mb-6">Este test interactivo te guiará para conocer cuál de nuestras menciones técnicas se conecta mejor con tu personalidad, habilidades y metas. ¡Comencemos!</p>
             
-            // Calcular porcentajes
-            const pctInformatica = Math.round((puntuacion.informatica / totalPreguntas) * 100);
-            const pctSalud = Math.round((puntuacion.salud / totalPreguntas) * 100);
-            const pctEconomia = Math.round((puntuacion.economia / totalPreguntas) * 100);
+            <form id="formulario-registro" onsubmit="iniciarTest(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nombre y Apellido</label>
+                    <input type="text" id="nombre" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:outline-none transition text-sm">
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Cédula o ID escolar</label>
+                        <input type="text" id="cedula" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:outline-none transition text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Edad</label>
+                        <input type="number" id="edad" min="10" max="18" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:outline-none transition text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Sección</label>
+                        <select id="seccion" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:outline-none transition text-sm">
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+                    </div>
+                </div>
 
-            // Actualizar la interfaz con los resultados en tiempo real
-            document.getElementById('pct-informatica').innerText = `${pctInformatica}%`;
-            document.getElementById('barra-informatica').style.width = `${pctInformatica}%`;
+                <button type="submit" class="w-full mt-6 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white font-black py-3.5 px-6 rounded-xl shadow-lg shadow-sky-500/20 transition duration-300 transform hover:-translate-y-0.5 text-sm uppercase tracking-wider">
+                    Iniciar mi Exploración 🔥
+                </button>
+            </form>
 
-            document.getElementById('pct-salud').innerText = `${pctSalud}%`;
-            document.getElementById('barra-salud').style.width = `${pctSalud}%`;
+            <div class="mt-8 pt-6 border-t border-slate-100 flex justify-center">
+                <div class="w-full bg-[#fcfcfc] rounded-2xl p-4 border border-slate-150/80 shadow-sm flex items-center justify-center transition-all hover:shadow-md">
+                    <img src="lema.jpg" alt="Lema Institucional" class="w-full h-auto max-h-24 md:max-h-28 object-contain logo-blend">
+                </div>
+            </div>
+        </div>
 
-            document.getElementById('pct-economia').innerText = `${pctEconomia}%`;
-            document.getElementById('barra-economia').style.width = `${pctEconomia}%`;
+        <!-- Pantalla 2: El Test -->
+        <div id="pantalla-test" class="p-8 hidden">
+            <div class="mb-6">
+                <div class="flex justify-between text-xs text-slate-500 mb-1">
+                    <span id="progreso-texto" class="font-bold">Pregunta 1 de 12</span>
+                    <span id="progreso-porcentaje" class="text-sky-500 font-bold">0% Completado</span>
+                </div>
+                <div class="w-full bg-slate-200 rounded-full h-2.5">
+                    <div id="barra-progreso" class="bg-sky-500 h-2.5 rounded-full transition-all duration-300" style="width: 8%;"></div>
+                </div>
+            </div>
 
-            // Determinar perfil predominante
-            let resultadoFinal = "";
-            let maxPuntos = Math.max(puntuacion.informatica, puntuacion.salud, puntuacion.economia);
+            <h3 id="pregunta-titulo" class="text-lg font-bold text-slate-800 mb-6 leading-snug">Aquí va la pregunta</h3>
+            <div id="opciones-contenedor" class="space-y-3"></div>
+        </div>
 
-            if (maxPuntos === puntuacion.informatica) {
-                resultadoFinal = "<strong>Informática y Tecnologías de la Información:</strong> Tienes una marcada inclinación por el pensamiento analítico, la lógica de programación y el diseño de soluciones tecnológicas estructuradas.";
-            } else if (maxPuntos === puntuacion.salud) {
-                resultadoFinal = "<strong>Ciencias de la Salud y Asistencia Social:</strong> Tu perfil denota una alta empatía, vocación de servicio directo y capacidades organizativas aptas para el sector de enfermería, primeros auxilios o registros de salud.";
-            } else {
-                resultadoFinal = "<strong>Economía Social, Administración y Contabilidad:</strong> Demuestras habilidades clave para el control organizativo, la gestión ordenada de recursos económicos y la administración estructurada.";
+        <!-- Pantalla 3: Resultados -->
+        <div id="pantalla-resultados" class="p-8 hidden">
+            <div class="text-center mb-6">
+                <span class="text-5xl animate-bounce inline-block">🎉</span>
+                <h2 class="text-2xl font-black text-slate-800 mt-3">¡Test Completado, <span id="resultado-nombre" class="text-sky-500">Estudiante</span>!</h2>
+                <p class="text-slate-500 text-sm mt-1">Aquí tienes tu perfil vocacional sugerido según tus respuestas.</p>
+            </div>
+
+            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 mb-6">
+                <h3 class="text-sm font-black text-slate-700 uppercase tracking-wider mb-4 flex items-center gap-2">
+                    📊 Tu porcentaje de afinidad:
+                </h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+                            <span>ÁREA DE LA SALUD (ENFERMERÍA / REGISTRO)</span>
+                            <span id="porcentaje-salud" class="text-emerald-600 font-extrabold">50%</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-3">
+                            <div id="barra-salud" class="bg-emerald-500 h-3 rounded-full transition-all duration-500" style="width: 50%"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+                            <span>ÁREA DE ECONOMÍA SOCIAL (ADMON / CONTABILIDAD)</span>
+                            <span id="porcentaje-economia" class="text-amber-600 font-extrabold">50%</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-3">
+                            <div id="barra-economia" class="bg-amber-500 h-3 rounded-full transition-all duration-500" style="width: 50%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-100 pt-4 mb-6">
+                <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Mención Especializada Recomendada:</h4>
+                <div id="mencion-tarjeta" class="p-5 rounded-2xl bg-[#f8fafc] border-2 border-sky-100">
+                    <h5 id="mencion-titulo" class="font-extrabold text-lg text-sky-950">Mención</h5>
+                    <p id="mencion-descripcion" class="text-xs text-slate-600 mt-2 leading-relaxed">Descripción adaptada...</p>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button onclick="reiniciarTest()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3.5 px-4 rounded-xl transition text-sm">
+                    Repetir Test 🔄
+                </button>
+                <button onclick="generarReportePDF()" class="flex-1 bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-700 hover:to-sky-600 text-white font-extrabold py-3.5 px-4 rounded-xl transition text-sm shadow-md shadow-blue-500/20 flex items-center justify-center gap-2">
+                    📥 Descargar mi Reporte (PDF)
+                </button>
+            </div>
+        </div>
+
+        <!-- Zona de Uso del Orientador -->
+        <div class="bg-slate-50 p-4 border-t border-slate-100 flex justify-between items-center text-[11px] text-slate-400">
+            <span>Uso exclusivo del Orientador Educativo</span>
+            <button onclick="descargarExcelCompleto()" class="text-sky-600 hover:text-sky-800 underline font-bold transition flex items-center gap-1">
+                📊 Descargar Base de Datos (Excel)
+            </button>
+        </div>
+
+    </div>
+
+    <!-- ================= CONTENEDOR DE RENDERING (Se mantiene siempre "dibujado" pero oculto a la izquierda para evitar PDFs en blanco) ================= -->
+    <div id="plantilla-pdf" style="position: absolute; left: -9999px; top: 0; width: 750px; background-color: #ffffff; box-sizing: border-box;">
+        <div style="padding: 40px; font-family: 'Poppins', sans-serif; color: #1e293b; background-color: #ffffff;">
+            
+            <!-- Cabecera Oficial ETPMA -->
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #0ea5e9; padding-bottom: 20px; margin-bottom: 25px;">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <img src="logo.jpg" style="height: 70px; width: auto;" alt="Escudo">
+                    <div>
+                        <h4 style="margin: 0; font-size: 10px; color: #64748b; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;">E.T.P. María Auxiliadora</h4>
+                        <h1 style="margin: 0; font-size: 20px; color: #0f172a; font-weight: 900; text-transform: uppercase;">Reporte Vocacional</h1>
+                    </div>
+                </div>
+                <img src="lema.jpg" style="height: 50px; width: auto;" alt="Lema">
+            </div>
+
+            <!-- Ficha del Estudiante -->
+            <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-bottom: 25px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                <p style="margin: 0; font-size: 12px;"><strong>Estudiante:</strong> <span id="pdf-nombre"></span></p>
+                <p style="margin: 0; font-size: 12px;"><strong>Cédula:</strong> <span id="pdf-cedula"></span></p>
+                <p style="margin: 0; font-size: 12px;"><strong>Edad:</strong> <span id="pdf-edad"></span> años</p>
+                <p style="margin: 0; font-size: 12px;"><strong>Sección:</strong> <span id="pdf-seccion"></span></p>
+                <p style="margin: 0; font-size: 12px; grid-column: span 2;"><strong>Fecha de Evaluación:</strong> <span id="pdf-fecha"></span></p>
+            </div>
+
+            <!-- Porcentajes de Afinidad -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="font-size: 14px; color: #334155; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">📊 Porcentajes de Afinidad Vocacional</h3>
+                
+                <!-- Barra Salud -->
+                <div style="margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 5px;">
+                        <span>Área de la Salud (Enfermería / Registro)</span>
+                        <span id="pdf-porc-salud" style="color: #059669;">0%</span>
+                    </div>
+                    <div style="background-color: #e2e8f0; border-radius: 9999px; height: 12px; overflow: hidden;">
+                        <div id="pdf-barra-salud" style="background-color: #10b981; height: 100%; width: 0%;"></div>
+                    </div>
+                </div>
+
+                <!-- Barra Economía -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 5px;">
+                        <span>Área de Economía Social (Administración / Contabilidad)</span>
+                        <span id="pdf-porc-economia" style="color: #d97706;">0%</span>
+                    </div>
+                    <div style="background-color: #e2e8f0; border-radius: 9999px; height: 12px; overflow: hidden;">
+                        <div id="pdf-barra-economia" style="background-color: #f59e0b; height: 100%; width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sugerencia y Recomendación -->
+            <div style="border: 2px dashed #0ea5e9; background-color: #f0f9ff; border-radius: 16px; padding: 20px; text-align: center;">
+                <span style="font-size: 24px;">⭐</span>
+                <h2 style="font-size: 16px; font-weight: 900; color: #0369a1; margin-top: 5px; text-transform: uppercase;">Mención Sugerida</h2>
+                <h3 id="pdf-mencion-titulo" style="font-size: 15px; font-weight: 800; color: #0f172a; margin-top: 5px;">Mención recomendada</h3>
+                <p id="pdf-mencion-desc" style="font-size: 11px; color: #475569; line-height: 1.6; margin-top: 10px; text-align: justify; padding: 0 10px;"></p>
+            </div>
+
+            <!-- Pie del Reporte -->
+            <div style="margin-top: 40px; text-align: center; font-size: 9px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+                Documento emitido por el Departamento de Orientación de la Escuela Técnica Popular María Auxiliadora.<br>
+                <strong>"Buenos Cristianos, Honestos Ciudadanos y Profesionales de Calidad al Servicio de la Vida."</strong>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Script de lógica de la aplicación -->
+    <script>
+        // Base de Datos de Preguntas (12 preguntas)
+        const preguntas = [
+            {
+                id: 1,
+                pregunta: "Imagínate que en la escuela hay una jornada de salud y limpieza. ¿En qué actividad te ofrecerías a ayudar primero con más ganas?",
+                opciones: [
+                    { texto: "Ayudando a tomar el peso y la estatura de los estudiantes de primer grado.", valor: "enfermeria" },
+                    { texto: "Ayudando a registrar en una planilla o computadora los datos de las vacunas de todos.", valor: "registro" },
+                    { texto: "Coordinando al equipo de compañeros para repartir los materiales de limpieza en orden.", valor: "administracion" },
+                    { texto: "Llevando la cuenta exacta de los jabones, cepillos y cloro que se usaron en el día.", valor: "contabilidad" }
+                ]
+            },
+            {
+                id: 2,
+                pregunta: "Si tus compañeros están organizando un compartir para fin de año escolar, ¿cuál de estas tareas se te hace más divertida?",
+                opciones: [
+                    { texto: "Hacer un presupuesto exacto para saber cuánto dinero debe poner cada compañero.", valor: "contabilidad" },
+                    { texto: "Comprar las cosas y coordinar que cada quien traiga lo que le toca a tiempo.", valor: "administracion" },
+                    { texto: "Hacer una lista detallada en orden alfabético de los invitados y controlar quién ya confirmó.", valor: "registro" },
+                    { texto: "Encargarte de preparar las bebidas limpiamente y estar pendiente de si alguien se siente mal.", valor: "enfermeria" }
+                ]
+            },
+            {
+                id: 3,
+                pregunta: "En una clase de Ciencias Naturales, ¿qué tipo de proyecto te llama más la atención hacer?",
+                opciones: [
+                    { texto: "Estudiar el cuerpo humano, cómo funcionan las defensas y cómo sanar heridas básicas.", valor: "enfermeria" },
+                    { texto: "Investigar cuántas personas se enferman de gripe al año en Venezuela y graficar los datos.", valor: "registro" },
+                    { texto: "Crear un plan de negocios ecológico para vender productos reciclados en la escuela.", valor: "administracion" },
+                    { texto: "Hacer el libro de cuentas para registrar las ventas y ganancias del proyecto escolar.", valor: "contabilidad" }
+                ]
+            },
+            {
+                id: 4,
+                pregunta: "Si un amigo tuyo se cae jugando fútbol en la cancha de la escuela y se raspa la rodilla, tú de inmediato:",
+                opciones: [
+                    { texto: "Te acercas, lo acompañas a lavarse la herida y le pones una curita con cuidado.", valor: "enfermeria" },
+                    { texto: "Vas rápido a la dirección a avisar y a buscar la ficha de emergencias de tu amigo.", valor: "registro" },
+                    { texto: "Tomás el control de la situación, calmas al grupo y buscas al profesor de guardia.", valor: "administracion" },
+                    { texto: "Revisas si el botiquín tiene alcohol y cuentas cuántas vendas quedan para reponerlas luego.", valor: "contabilidad" }
+                ]
+            },
+            {
+                id: 5,
+                pregunta: "Cuando trabajas en grupo, tus compañeros suelen buscarte porque tú eres muy bueno(a):",
+                opciones: [
+                    { texto: "Siendo empático, escuchando a todos y asegurando que nadie se sientas excluido.", valor: "enfermeria" },
+                    { texto: "Ordenando la información, haciendo esquemas limpios y carpetas para no perder nada.", valor: "registro" },
+                    { texto: "Repartiendo las tareas, animando al equipo y organizando el tiempo de entrega.", valor: "administracion" },
+                    { texto: "Haciendo cálculos rápidos o cuadrando los gastos de la lámina de exposición.", valor: "contabilidad" }
+                ]
+            },
+            {
+                id: 6,
+                pregunta: "Si tuvieras que usar una computadora para un proyecto escolar, ¿qué te gustaría aprender a usar mejor?",
+                opciones: [
+                    { texto: "Programas interactivos para aprender cómo funciona el sistema nervioso en 3D.", valor: "enfermeria" },
+                    { texto: "Hojas de cálculo para ordenar listas de pacientes, historiales y estadísticas médicas.", valor: "registro" },
+                    { texto: "Herramientas de diseño y presentaciones para vender una gran idea o emprendimiento.", valor: "administracion" },
+                    { texto: "Fórmulas de Excel para sumar ingresos, egresos y calcular ganancias exactas.", valor: "contabilidad" }
+                ]
+            },
+            {
+                id: 7,
+                pregunta: "Imagina que eres parte del centro de estudiantes de la técnica, ¿cuál de estos proyectos te gustaría liderar?",
+                opciones: [
+                    { texto: "Una campaña para enseñar hábitos de higiene personal y alimentación saludable.", valor: "enfermeria" },
+                    { texto: "Un sistema de archivo digital para que los estudiantes no pierdan sus notas.", valor: "registro" },
+                    { texto: "Un plan de emprendimiento estudiantil para registrar y vender productos en la escuela.", valor: "administracion" },
+                    { texto: "Llevar la administración transparente del dinero recaudado por las cantinas escolares.", valor: "contabilidad" }
+                ]
+            },
+            {
+                id: 8,
+                pregunta: "Cuando entras a una oficina o un consultorio médico, ¿qué es lo primero en lo que te fijas?",
+                opciones: [
+                    { texto: "En el trato de las enfermeras o doctores con los pacientes que están esperando.", valor: "enfermeria" },
+                    { texto: "En cómo están organizadas las carpetas de las historias médicas y las citas.", valor: "registro" },
+                    { texto: "En cómo coordinan las secretarias y jefes para que todo el lugar funcione bien.", valor: "administracion" },
+                    { texto: "En la lista de precios de las consultas o las facturas que entregan al salir.", valor: "contabilidad" }
+                ]
+            },
+            {
+                id: 9,
+                pregunta: "Si pudieras pasar una tarde entera conversando con un profesional para aprender de su trabajo, ¿a quién elegirías?",
+                opciones: [
+                    { texto: "A un enfermero de terapia intensiva para saber cómo salvan vidas en emergencias.", valor: "enfermeria" },
+                    { texto: "A un analista de datos de salud que investiga cómo prevenir epidemias con estadísticas.", valor: "registro" },
+                    { texto: "Al gerente de una gran empresa venezolana que sabe cómo dirigir a cientos de empleados.", valor: "administracion" },
+                    { texto: "A un contador que ayuda a los negocios del país a organizar sus finanzas e impuestos.", valor: "contabilidad" }
+                ]
+            },
+            {
+                id: 10,
+                pregunta: "¿Qué tipo de libros o videos de YouTube te llaman más la atención?",
+                opciones: [
+                    { texto: "Historias sobre descubrimientos de la medicina o cuidados del cuerpo.", valor: "enfermeria" },
+                    { texto: "Curiosidades sobre bases de datos gigantes, informática o cómo se archiva la información.", valor: "registro" },
+                    { texto: "Consejos de liderazgo, cómo crear marcas famosas o cómo ser un buen director.", valor: "administracion" },
+                    { texto: "Retos de lógica matemática, finanzas personales y trucos de ahorro inteligente.", valor: "contabilidad" }
+                ]
+            },
+            {
+                id: 11,
+                pregunta: "En tu tiempo libre, si tienes que ordenar tu habitación, ¿cómo lo haces?",
+                opciones: [
+                    { texto: "Priorizo limpiar mi cama y tener todo desinfectado para sentirme cómodo y sano.", valor: "enfermeria" },
+                    { texto: "Clasifico minuciosamente mi ropa por colores o tipos y mis cuadernos en orden.", valor: "registro" },
+                    { texto: "Hago un plan rápido en mi mente de lo que debo limpiar primero y pido ayuda si es necesario.", valor: "administracion" },
+                    { texto: "Aprovecho de contar si me queda espacio en los cajones e inventariar lo que ya no me sirve.", valor: "contabilidad" }
+                ]
+            },
+            {
+                id: 12,
+                pregunta: "Para ti, ¿cuál es la mejor manera de ayudar al desarrollo de Venezuela desde tu escuela?",
+                opciones: [
+                    { texto: "Cuidando de la salud física y el bienestar de los ciudadanos más necesitados.", valor: "enfermeria" },
+                    { texto: "Mejorando la tecnología y la organización de la información en nuestros centros públicos.", valor: "registro" },
+                    { texto: "Creando empresas y proyectos que den empleo formal y organicen el país.", valor: "administracion" },
+                    { texto: "Cuidando los recursos económicos para evitar que se malgasten las finanzas públicas.", valor: "contabilidad" }
+                ]
             }
+        ];
 
-            document.getElementById('area-resultado').innerHTML = resultadoFinal;
+        // Menciones y sus perfiles
+        const perfiles = {
+            enfermeria: {
+                titulo: "Especialidad: SALUD - Mención Enfermería",
+                descripcion: "Posees una fuerte vocación de servicio, empatía y sensibilidad hacia el dolor ajeno, esenciales en la teoría del cuidado humano. Tu perfil indica una clara inclinación por la atención directa, los primeros auxilios y la promoción de la salud comunitaria."
+            },
+            registro: {
+                titulo: "Especialidad: SALUD - Mención Registro y Estadística de Salud",
+                descripcion: "Tu perfil destaca por la precisión, el orden metodológico y el gusto por la tecnología aplicada a la salud. Eres ideal para procesar historiales médicos y generar las estadísticas vitales indispensables para las políticas de salud pública del país."
+            },
+            administracion: {
+                titulo: "Especialidad: ECONOMÍA SOCIAL - Mención Administración",
+                descripcion: "Muestras rasgos de liderazgo, pensamiento estratégico y toma de decisiones. Tienes aptitudes para coordinar equipos humanos, organizar recursos escasos y emprender proyectos productivos de impacto social."
+            },
+            contabilidad: {
+                titulo: "Especialidad: ECONOMÍA SOCIAL - Mención Contabilidad",
+                descripcion: "Destacas por tu capacidad analítica, amor por los números y estructuración lógica. Tienes el perfil ideal para gestionar presupuestos, analizar flujos de caja y asegurar la salud financiera de organizaciones públicas o privadas."
+            }
+        };
 
-            // Establecer fecha del reporte actual
-            const fechaActual = new Date();
-            document.getElementById('fecha-reporte').innerText = fechaActual.toLocaleDateString('es-ES', {
-                year: 'numeric', month: 'long', day: 'numeric'
-            });
+        let estudianteActual = {};
+        let respuestasEstudiante = [];
+        let preguntaActualIdx = 0;
 
-            // Transición fluida de pantallas
-            document.getElementById('pantalla-test').classList.add('hidden');
-            document.getElementById('seccion-reporte').classList.remove('hidden');
-        });
+        let baseDatosHistorica = JSON.parse(localStorage.getItem("bd_orientacion_auxiliadora")) || [];
 
-        // REINICIAR EL FORMULARIO
-        function reiniciarTest() {
-            document.getElementById('formulario-test').reset();
-            document.getElementById('seccion-reporte').classList.add('hidden');
-            document.getElementById('pantalla-test').classList.remove('hidden');
+        const frasesMotivacionales = {
+            registro: {
+                tag: "Tu Oportunidad",
+                texto: '"El único modo de hacer un gran trabajo es amar lo que haces. Tu futuro profesional empieza con la decisión que tomas hoy."'
+            },
+            test: {
+                tag: "Sigue Adelante",
+                texto: '"No te detengas. Cada respuesta te acerca más a descubrir el talento único que tienes para transformar tu entorno."'
+            },
+            resultados: {
+                tag: "Meta Alcanzada",
+                texto: '"¡Excelente trabajo! Has completado tu mapa de ruta. Ahora tienes las herramientas para decidir tu camino técnico."'
+            }
+        };
+
+        function actualizarPanelMotivacional(fase) {
+            const data = frasesMotivacionales[fase];
+            document.getElementById("motivo-tag").innerText = data.tag;
+            document.getElementById("motivo-texto").innerText = data.texto;
         }
 
-        // ==========================================
-        // LA CORRECCIÓN CLAVE CONTRA EL PDF EN BLANCO
-        // ==========================================
-        function descargarReportePDF() {
-            const btn = document.getElementById('btn-pdf');
-            btn.disabled = true;
-            btn.innerText = "Generando PDF...";
+        function mostrarPantalla(id) {
+            document.getElementById("pantalla-registro").classList.add("hidden");
+            document.getElementById("pantalla-test").classList.add("hidden");
+            document.getElementById("pantalla-resultados").classList.add("hidden");
+            document.getElementById(id).classList.remove("hidden");
+        }
 
-            const target = document.getElementById('contenido-pdf');
+        function iniciarTest(e) {
+            e.preventDefault();
+            estudianteActual = {
+                nombre: document.getElementById("nombre").value,
+                cedula: document.getElementById("cedula").value,
+                edad: document.getElementById("edad").value,
+                seccion: document.getElementById("seccion").value,
+                fecha: new Date().toLocaleString("es-VE", { timeZone: "America/Caracas" })
+            };
+            respuestasEstudiante = [];
+            preguntaActualIdx = 0;
+            mostrarPantalla("pantalla-test");
+            cargarPregunta();
+            actualizarPanelMotivacional("test");
+        }
 
-            // Clonar temporalmente el nodo para asegurar que se procese con visibilidad total,
-            // garantizando que no se capture un lienzo en blanco (ancho/alto de 0px) en móviles o PCs lentas.
-            const clon = target.cloneNode(true);
-            clon.style.position = "absolute";
-            clon.style.left = "-9999px";
-            clon.style.top = "0px";
-            clon.style.display = "block"; 
-            clon.style.width = "800px"; // Ancho fijo estandarizado para evitar desbordes en móviles.
-            document.body.appendChild(clon);
+        function cargarPregunta() {
+            const preg = preguntas[preguntaActualIdx];
+            const porc = Math.round(((preguntaActualIdx) / preguntas.length) * 100);
+            document.getElementById("progreso-texto").innerText = `Pregunta ${preguntaActualIdx + 1} de ${preguntas.length}`;
+            document.getElementById("progreso-porcentaje").innerText = `${porc}% Completado`;
+            document.getElementById("barra-progreso").style.width = `${porc || 8}%`;
 
-            const opciones = {
-                margin:       [10, 10, 10, 10], // Márgenes físicos en milímetros
-                filename:     'Reporte_Vocacional_CAI.pdf',
+            document.getElementById("pregunta-titulo").innerText = `${preg.id}. ${preg.pregunta}`;
+
+            const contenedor = document.getElementById("opciones-contenedor");
+            contenedor.innerHTML = "";
+            preg.opciones.forEach(opcion => {
+                const boton = document.createElement("button");
+                boton.className = "w-full text-left p-4 rounded-2xl border-2 border-slate-200 hover:border-sky-500 hover:bg-slate-50 transition duration-250 focus:outline-none flex items-start gap-3 text-sm text-slate-700 font-medium active:scale-[0.99]";
+                boton.onclick = () => procesarRespuesta(opcion.valor);
+                boton.innerHTML = `
+                    <span class="w-5 h-5 flex items-center justify-center rounded-full bg-sky-100 text-sky-600 text-[10px] font-bold mt-0.5 shrink-0">✓</span>
+                    <span>${opcion.texto}</span>
+                `;
+                contenedor.appendChild(boton);
+            });
+        }
+
+        function procesarRespuesta(valor) {
+            respuestasEstudiante.push(valor);
+            preguntaActualIdx++;
+
+            if (preguntaActualIdx < preguntas.length) {
+                cargarPregunta();
+            } else {
+                calcularResultados();
+            }
+        }
+
+        function calcularResultados() {
+            const conteos = { enfermeria: 0, registro: 0, administracion: 0, contabilidad: 0 };
+            respuestasEstudiante.forEach(r => conteos[r]++);
+
+            const totalPreguntas = respuestasEstudiante.length;
+            const saludTotal = conteos.enfermeria + conteos.registro;
+            const ecoTotal = conteos.administracion + conteos.contabilidad;
+
+            const porcSalud = Math.round((saludTotal / totalPreguntas) * 100);
+            const porcEco = Math.round((ecoTotal / totalPreguntas) * 100);
+
+            let mencionDominante = "enfermeria";
+            let maxPuntaje = conteos.enfermeria;
+
+            for (const clave in conteos) {
+                if (conteos[clave] > maxPuntaje) {
+                    maxPuntaje = conteos[clave];
+                    mencionDominante = clave;
+                }
+            }
+
+            estudianteActual.porcSalud = porcSalud;
+            estudianteActual.porcEco = porcEco;
+            estudianteActual.mencionSugerida = perfiles[mencionDominante].titulo;
+            estudianteActual.mencionSugeridaDesc = perfiles[mencionDominante].descripcion;
+
+            baseDatosHistorica.push(estudianteActual);
+            localStorage.setItem("bd_orientacion_auxiliadora", JSON.stringify(baseDatosHistorica));
+
+            document.getElementById("resultado-nombre").innerText = estudianteActual.nombre;
+            document.getElementById("porcentaje-salud").innerText = `${porcSalud}%`;
+            document.getElementById("barra-salud").style.width = `${porcSalud}%`;
+            document.getElementById("porcentaje-economia").innerText = `${porcEco}%`;
+            document.getElementById("barra-economia").style.width = `${porcEco}%`;
+
+            document.getElementById("mencion-titulo").innerText = perfiles[mencionDominante].titulo;
+            document.getElementById("mencion-descripcion").innerText = perfiles[mencionDominante].descripcion;
+
+            mostrarPantalla("pantalla-resultados");
+            actualizarPanelMotivacional("resultados");
+        }
+
+        // ================= GENERACIÓN INTEGRAL DE PDF (Optimizado para teléfonos) =================
+        function generarReportePDF() {
+            // Llenamos el contenedor "off-screen" con los datos dinámicos antes de procesarlo
+            document.getElementById("pdf-nombre").innerText = estudianteActual.nombre;
+            document.getElementById("pdf-cedula").innerText = estudianteActual.cedula;
+            document.getElementById("pdf-edad").innerText = estudianteActual.edad;
+            document.getElementById("pdf-seccion").innerText = estudianteActual.seccion;
+            document.getElementById("pdf-fecha").innerText = estudianteActual.fecha;
+
+            document.getElementById("pdf-porc-salud").innerText = estudianteActual.porcSalud + '%';
+            document.getElementById("pdf-barra-salud").style.width = estudianteActual.porcSalud + '%';
+            document.getElementById("pdf-porc-economia").innerText = estudianteActual.porcEco + '%';
+            document.getElementById("pdf-barra-economia").style.width = estudianteActual.porcEco + '%';
+
+            document.getElementById("pdf-mencion-titulo").innerText = estudianteActual.mencionSugerida;
+            document.getElementById("pdf-mencion-desc").innerText = estudianteActual.mencionSugeridaDesc;
+
+            const element = document.getElementById("plantilla-pdf");
+            const nombreArchivo = 'Reporte_Vocacional_' + estudianteActual.nombre.replace(/\s+/g, '_') + '.pdf';
+
+            // Configuración óptima para teléfonos celulares
+            const opcionesPDF = {
+                margin:       10,
+                filename:     nombreArchivo,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { 
-                    scale: 2,               // Obliga a renderizar en alta definición sin importar el zoom de la pantalla del móvil
-                    useCORS: true,          // Permite cargar estilos e imágenes externas
-                    letterRendering: true,  // Renderizado optimizado para textos legibles
-                    scrollX: 0,
-                    scrollY: 0
+                    scale: 2, 
+                    useCORS: true,
+                    letterRendering: true,
+                    logging: false
                 },
                 jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
             };
 
-            // Ejecución asíncrona de html2pdf sobre el nodo clonado y visible
-            html2pdf()
-                .set(opciones)
-                .from(clon)
-                .save()
-                .then(() => {
-                    // Limpieza del clon del DOM
-                    document.body.removeChild(clon);
-                    
-                    // Restaurar botón de descarga original
-                    btn.disabled = false;
-                    btn.innerHTML = `
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                        <span>Descargar Reporte PDF</span>
-                    `;
-                })
-                .catch((error) => {
-                    console.error("Error al generar el PDF:", error);
-                    alert("Ocurrió un error al generar el PDF. Por favor, inténtelo de nuevo.");
-                    btn.disabled = false;
-                    btn.innerText = "Descargar Reporte PDF";
-                });
+            // Ejecuta el guardado directamente sobre el elemento ya renderizado en el fondo
+            html2pdf().set(opcionesPDF).from(element).save();
+        }
+
+        // ================= EXPORTACIÓN REAL A EXCEL PARA EL DOCENTE =================
+        function descargarExcelCompleto() {
+            if (baseDatosHistorica.length === 0) {
+                alert("Aún no hay registros de estudiantes almacenados en este navegador.");
+                return;
+            }
+
+            const wb = XLSX.utils.book_new();
+
+            const filas = baseDatosHistorica.map(function(est, i) {
+                return {
+                    "N°": i + 1,
+                    "Fecha Evaluacion": est.fecha,
+                    "Nombre y Apellido": est.nombre,
+                    "Cedula": est.cedula,
+                    "Edad": parseInt(est.edad),
+                    "Seccion": est.seccion,
+                    "Afinidad Salud (%)": est.porcSalud,
+                    "Afinidad Economia (%)": est.porcEco,
+                    "Mencion Recomendada": est.mencionSugerida
+                };
+            });
+
+            const ws = XLSX.utils.json_to_sheet(filas);
+
+            const objectKeys = Object.keys(filas[0]);
+            ws["!cols"] = objectKeys.map(function(key) {
+                return {
+                    wch: Math.max(...filas.map(function(row) {
+                        return row[key] ? row[key].toString().length : 0;
+                    }), key.length) + 3
+                };
+            });
+
+            XLSX.utils.book_append_sheet(wb, ws, "Base de Datos ETPMA");
+            XLSX.writeFile(wb, 'BD_Orientacion_Maria_Auxiliadora.xlsx');
+        }
+
+        function reiniciarTest() {
+            document.getElementById("formulario-registro").reset();
+            mostrarPantalla("pantalla-registro");
+            actualizarPanelMotivacional("registro");
         }
     </script>
 </body>
