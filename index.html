@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Librerías para exportar a PDF y Excel de forma nativa -->
+    <!-- Librerías para exportar de forma nativa -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
@@ -17,33 +17,31 @@
             font-family: 'Poppins', sans-serif;
             background-color: #f3f4f6;
         }
-        /* Fusiona el fondo blanco de los logos con el fondo del contenedor */
         .logo-blend {
             mix-blend-mode: multiply;
         }
-        /* Patrón geométrico digital para el fondo del panel motivacional */
         .tech-pattern {
             background-image: radial-gradient(rgba(56, 189, 248, 0.15) 1px, transparent 0);
             background-size: 16px 16px;
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+<body class="min-h-screen flex items-center justify-center p-2 sm:p-4">
 
-    <!-- Tarjeta Principal de Gran Presencia (Ancha y Espaciosa) -->
-    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden border border-slate-200">
+    <!-- Tarjeta Principal -->
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden border border-slate-200 my-4">
         
-        <!-- Encabezado de Dos Columnas: Izquierda (Logo/Título) - Derecha (Ilustración/Frase Motivacional) -->
+        <!-- Encabezado de Dos Columnas -->
         <div class="bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a] text-white relative grid grid-cols-1 md:grid-cols-12 border-b-4 border-sky-500">
             
-            <!-- Bloque Izquierdo: Identidad de la App (7/12 de espacio) -->
-            <div class="md:col-span-7 p-8 flex flex-col sm:flex-row items-center gap-6">
-                <!-- Contenedor del Escudo Oficial (Fusión sin fondo blanco) -->
+            <!-- Bloque Izquierdo -->
+            <div class="md:col-span-7 p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6">
+                <!-- Escudo Oficial -->
                 <div class="w-24 h-28 bg-[#f8fafc] p-2.5 rounded-2xl flex items-center justify-center shrink-0 shadow-inner">
                     <img src="logo.jpg" alt="Escudo E.T.P. María Auxiliadora" class="max-w-full max-h-full object-contain logo-blend">
                 </div>
                 
-                <!-- Título Principal -->
+                <!-- Título -->
                 <div class="text-center sm:text-left flex-grow">
                     <div class="text-[10px] bg-sky-500/20 text-sky-300 font-extrabold px-2.5 py-1 rounded-full uppercase tracking-widest inline-block mb-2">
                         E.T.P. María Auxiliadora • Altamira
@@ -58,8 +56,8 @@
                 </div>
             </div>
 
-            <!-- Bloque Derecho: Ilustración Digital y Frase Motivacional -->
-            <div class="md:col-span-5 border-t md:border-t-0 md:border-l border-slate-700/50 relative overflow-hidden flex items-center justify-center p-6 min-h-[140px] md:min-h-0 tech-pattern">
+            <!-- Bloque Derecho -->
+            <div class="md:col-span-5 border-t md:border-t-0 md:border-l border-slate-700/50 relative overflow-hidden flex items-center justify-center p-6 min-h-[120px] md:min-h-0 tech-pattern">
                 <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-sky-500/20 rounded-full blur-3xl"></div>
                 <div class="absolute -left-10 -top-10 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl"></div>
                 
@@ -75,17 +73,17 @@
         </div>
 
         <!-- Pantalla 1: Registro del Estudiante -->
-        <div id="pantalla-registro" class="p-8">
+        <div id="pantalla-registro" class="p-6 sm:p-8">
             <h2 class="text-xl font-bold text-slate-800 mb-2">¡Bienvenido al portal del futuro! 🚀</h2>
             <p class="text-slate-600 text-sm mb-6">Este test interactivo te guiará para conocer cuál de nuestras menciones técnicas se conecta mejor con tu personalidad, habilidades y metas. ¡Comencemos!</p>
             
-            <form id="formulario-registro" onsubmit="iniciarTest(event)" class="space-y-4">
+            <form id="formulario-registro" onsubmit="validarEIniciarTest(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nombre y Apellido</label>
                     <input type="text" id="nombre" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:outline-none transition text-sm">
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Cédula o ID escolar</label>
                         <input type="text" id="cedula" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:outline-none transition text-sm">
@@ -118,7 +116,7 @@
         </div>
 
         <!-- Pantalla 2: El Test -->
-        <div id="pantalla-test" class="p-8 hidden">
+        <div id="pantalla-test" class="p-6 sm:p-8 hidden">
             <div class="mb-6">
                 <div class="flex justify-between text-xs text-slate-500 mb-1">
                     <span id="progreso-texto" class="font-bold">Pregunta 1 de 12</span>
@@ -134,7 +132,7 @@
         </div>
 
         <!-- Pantalla 3: Resultados -->
-        <div id="pantalla-resultados" class="p-8 hidden">
+        <div id="pantalla-resultados" class="p-6 sm:p-8 hidden">
             <div class="text-center mb-6">
                 <span class="text-5xl animate-bounce inline-block">🎉</span>
                 <h2 class="text-2xl font-black text-slate-800 mt-3">¡Test Completado, <span id="resultado-nombre" class="text-sky-500">Estudiante</span>!</h2>
@@ -179,7 +177,7 @@
 
             <div class="flex flex-col sm:flex-row gap-3">
                 <button onclick="reiniciarTest()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3.5 px-4 rounded-xl transition text-sm">
-                    Repetir Test 🔄
+                    Volver al Inicio 🔄
                 </button>
                 <button onclick="generarReportePDF()" class="flex-1 bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-700 hover:to-sky-600 text-white font-extrabold py-3.5 px-4 rounded-xl transition text-sm shadow-md shadow-blue-500/20 flex items-center justify-center gap-2">
                     📥 Descargar mi Reporte (PDF)
@@ -188,82 +186,13 @@
         </div>
 
         <!-- Zona de Uso del Orientador -->
-        <div class="bg-slate-50 p-4 border-t border-slate-100 flex justify-between items-center text-[11px] text-slate-400">
+        <div class="bg-slate-50 p-4 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center text-[11px] text-slate-400 gap-2">
             <span>Uso exclusivo del Orientador Educativo</span>
             <button onclick="descargarExcelCompleto()" class="text-sky-600 hover:text-sky-800 underline font-bold transition flex items-center gap-1">
                 📊 Descargar Base de Datos (Excel)
             </button>
         </div>
 
-    </div>
-
-    <!-- ================= CONTENEDOR DE RENDERING PDF (Oculto a la izquierda de la pantalla) ================= -->
-    <div id="plantilla-pdf" style="position: absolute; left: -9999px; top: 0; width: 750px; background-color: #ffffff; box-sizing: border-box;">
-        <div style="padding: 40px; font-family: 'Poppins', sans-serif; color: #1e293b; background-color: #ffffff;">
-            
-            <!-- Cabecera Oficial ETPMA -->
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #0ea5e9; padding-bottom: 20px; margin-bottom: 25px;">
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <img src="logo.jpg" style="height: 70px; width: auto;" alt="Escudo">
-                    <div>
-                        <h4 style="margin: 0; font-size: 10px; color: #64748b; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;">E.T.P. María Auxiliadora</h4>
-                        <h1 style="margin: 0; font-size: 20px; color: #0f172a; font-weight: 900; text-transform: uppercase;">Reporte Vocacional</h1>
-                    </div>
-                </div>
-                <img src="lema.jpg" style="height: 50px; width: auto;" alt="Lema">
-            </div>
-
-            <!-- Ficha del Estudiante -->
-            <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-bottom: 25px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
-                <p style="margin: 0; font-size: 12px;"><strong>Estudiante:</strong> <span id="pdf-nombre"></span></p>
-                <p style="margin: 0; font-size: 12px;"><strong>Cédula:</strong> <span id="pdf-cedula"></span></p>
-                <p style="margin: 0; font-size: 12px;"><strong>Edad:</strong> <span id="pdf-edad"></span> años</p>
-                <p style="margin: 0; font-size: 12px;"><strong>Sección:</strong> <span id="pdf-seccion"></span></p>
-                <p style="margin: 0; font-size: 12px; grid-column: span 2;"><strong>Fecha de Evaluación:</strong> <span id="pdf-fecha"></span></p>
-            </div>
-
-            <!-- Porcentajes de Afinidad -->
-            <div style="margin-bottom: 30px;">
-                <h3 style="font-size: 14px; color: #334155; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">📊 Porcentajes de Afinidad Vocacional</h3>
-                
-                <!-- Barra Salud -->
-                <div style="margin-bottom: 15px;">
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 5px;">
-                        <span>Área de la Salud (Enfermería / Registro)</span>
-                        <span id="pdf-porc-salud" style="color: #059669;">0%</span>
-                    </div>
-                    <div style="background-color: #e2e8f0; border-radius: 9999px; height: 12px; overflow: hidden;">
-                        <div id="pdf-barra-salud" style="background-color: #10b981; height: 100%; width: 0%;"></div>
-                    </div>
-                </div>
-
-                <!-- Barra Economía -->
-                <div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 5px;">
-                        <span>Área de Economía Social (Administración / Contabilidad)</span>
-                        <span id="pdf-porc-economia" style="color: #d97706;">0%</span>
-                    </div>
-                    <div style="background-color: #e2e8f0; border-radius: 9999px; height: 12px; overflow: hidden;">
-                        <div id="pdf-barra-economia" style="background-color: #f59e0b; height: 100%; width: 0%;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sugerencia y Recomendación -->
-            <div style="border: 2px dashed #0ea5e9; background-color: #f0f9ff; border-radius: 16px; padding: 20px; text-align: center;">
-                <span style="font-size: 24px;">⭐</span>
-                <h2 style="font-size: 16px; font-weight: 900; color: #0369a1; margin-top: 5px; text-transform: uppercase;">Mención Sugerida</h2>
-                <h3 id="pdf-mencion-titulo" style="font-size: 15px; font-weight: 800; color: #0f172a; margin-top: 5px;">Mención recomendada</h3>
-                <p id="pdf-mencion-desc" style="font-size: 11px; color: #475569; line-height: 1.6; margin-top: 10px; text-align: justify; padding: 0 10px;"></p>
-            </div>
-
-            <!-- Pie del Reporte -->
-            <div style="margin-top: 40px; text-align: center; font-size: 9px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 15px;">
-                Documento emitido por el Departamento de Orientación de la Escuela Técnica Popular María Auxiliadora.<br>
-                <strong>"Buenos Cristianos, Honestos Ciudadanos y Profesionales de Calidad al Servicio de la Vida."</strong>
-            </div>
-
-        </div>
     </div>
 
     <!-- Script de lógica de la aplicación -->
@@ -447,15 +376,29 @@
             document.getElementById(id).classList.remove("hidden");
         }
 
-        function iniciarTest(e) {
+        // VALIDACIÓN DE UN SÓLO INTENTO RIGUROSA
+        function validarEIniciarTest(e) {
             e.preventDefault();
+            
+            const cedulaIngresada = document.getElementById("cedula").value.trim();
+            
+            // Verificar si la cédula ya existe en los registros guardados
+            const estudianteDuplicado = baseDatosHistorica.find(est => est.cedula === cedulaIngresada);
+            
+            if (estudianteDuplicado) {
+                alert(`⚠️ ACCESO RESTRINGIDO: El estudiante con Cédula/ID ${cedulaIngresada} ya ha presentado este test vocacional el día ${estudianteDuplicado.fecha}. No es posible repetir la prueba.`);
+                return;
+            }
+
+            // Si no está duplicado, inicializa el flujo
             estudianteActual = {
                 nombre: document.getElementById("nombre").value.trim(),
-                cedula: document.getElementById("cedula").value.trim(),
+                cedula: cedulaIngresada,
                 edad: document.getElementById("edad").value,
                 seccion: document.getElementById("seccion").value,
                 fecha: new Date().toLocaleString("es-VE", { timeZone: "America/Caracas" })
             };
+            
             respuestasEstudiante = [];
             preguntaActualIdx = 0;
             mostrarPantalla("pantalla-test");
@@ -477,8 +420,8 @@
             
             preg.opciones.forEach(opcion => {
                 const boton = document.createElement("button");
-                boton.className = "w-full text-left p-4 rounded-2xl border-2 border-slate-200 hover:border-sky-500 hover:bg-slate-50 transition duration-250 focus:outline-none flex items-start gap-3 text-sm text-slate-700 font-medium active:scale-[0.99]";
-                boton.innerHTML = `<span class="inline-block px-2.5 py-1 bg-slate-100 text-slate-500 rounded-lg text-xs font-bold shrink-0">➜</span> <span>${opcion.texto}</span>`;
+                boton.className = "w-full text-left p-4 rounded-2xl border-2 border-slate-200 hover:border-sky-500 hover:bg-slate-50 transition duration-250 focus:outline-none flex items-start gap-3 text-sm text-slate-700 font-medium active:scale-[0.99] touch-manipulation";
+                boton.innerHTML = `<span class="inline-block px-2.5 py-1 bg-slate-100 text-slate-500 rounded-lg text-xs font-bold shrink-0">➜</span> <span class="leading-tight">${opcion.texto}</span>`;
                 boton.onclick = () => registrarRespuesta(opcion.valor);
                 contenedor.appendChild(boton);
             });
@@ -496,11 +439,9 @@
         }
 
         function finalizarTest() {
-            // Inicializar contadores de afinidad
             let conteo = { enfermeria: 0, registro: 0, administracion: 0, contabilidad: 0 };
             respuestasEstudiante.forEach(val => { conteo[val]++; });
 
-            // Agrupaciones por Áreas macros
             const totalSalud = conteo.enfermeria + conteo.registro;
             const totalEconomia = conteo.administracion + conteo.contabilidad;
             const totalPreguntas = preguntas.length;
@@ -508,33 +449,29 @@
             const porcSalud = Math.round((totalSalud / totalPreguntas) * 100);
             const porcEconomia = Math.round((totalEconomia / totalPreguntas) * 100);
 
-            // Determinar la Mención Ganadora absoluta
             let mencionGanadora = "enfermeria";
             let maxVotos = -1;
 
-            // Encontrar la mención individual con más votos
             Object.keys(conteo).forEach(mencion => {
                 if (conteo[mencion] > maxVotos) {
                     maxVotos = conteo[mencion];
                     mencionGanadora = mencion;
                 } else if (conteo[mencion] === maxVotos) {
-                    // Desempates lógicos personalizados
                     if (mencion === "enfermeria" && mencionGanadora === "registro") mencionGanadora = "enfermeria"; 
                     if (mencion === "administracion" && mencionGanadora === "contabilidad") mencionGanadora = "administracion";
                 }
             });
 
-            // Guardar resultados procesados del estudiante actual
             estudianteActual.p_salud = porcSalud;
             estudianteActual.p_economia = porcEconomia;
             estudianteActual.mencion = perfiles[mencionGanadora].titulo;
             estudianteActual.descripcion = perfiles[mencionGanadora].descripcion;
 
-            // Guardar en base de datos histórica local
+            // Almacenamiento definitivo de datos
             baseDatosHistorica.push(estudianteActual);
             localStorage.setItem("bd_orientacion_auxiliadora", JSON.stringify(baseDatosHistorica));
 
-            // Cargar datos en los contenedores visuales de pantalla de resultados
+            // Cargar en la interfaz
             document.getElementById("resultado-nombre").innerText = estudianteActual.nombre;
             document.getElementById("porcentaje-salud").innerText = `${porcSalud}%`;
             document.getElementById("barra-salud").style.width = `${porcSalud}%`;
@@ -544,22 +481,6 @@
             document.getElementById("mencion-titulo").innerText = estudianteActual.mencion;
             document.getElementById("mencion-descripcion").innerText = estudianteActual.descripcion;
 
-            // Preparar e inyectar valores en la plantilla de impresión PDF
-            document.getElementById("pdf-nombre").innerText = estudianteActual.nombre;
-            document.getElementById("pdf-cedula").innerText = estudianteActual.cedula;
-            document.getElementById("pdf-edad").innerText = estudianteActual.edad;
-            document.getElementById("pdf-seccion").innerText = estudianteActual.seccion;
-            document.getElementById("pdf-fecha").innerText = estudianteActual.fecha;
-
-            document.getElementById("pdf-porc-salud").innerText = `${porcSalud}%`;
-            document.getElementById("pdf-barra-salud").style.width = `${porcSalud}%`;
-            document.getElementById("pdf-porc-economia").innerText = `${porcEconomia}%`;
-            document.getElementById("pdf-barra-economia").style.width = `${porcEconomia}%`;
-
-            document.getElementById("pdf-mencion-titulo").innerText = estudianteActual.mencion;
-            document.getElementById("pdf-mencion-desc").innerText = estudianteActual.descripcion;
-
-            // Mostrar pantalla resultados y refrescar panel motivación
             mostrarPantalla("pantalla-resultados");
             actualizarPanelMotivacional("resultados");
         }
@@ -570,27 +491,106 @@
             actualizarPanelMotivacional("registro");
         }
 
+        // GENERACIÓN DINÁMICA DE PDF (Soluciona hojas en blanco en navegadores y móviles)
         function generarReportePDF() {
-            const elemento = document.getElementById("plantilla-pdf");
+            // Creamos un contenedor temporal en memoria sin interferir con el viewport activo
+            const printContainer = document.createElement("div");
+            printContainer.style.width = "750px";
+            printContainer.style.padding = "40px";
+            printContainer.style.backgroundColor = "#ffffff";
+            printContainer.style.color = "#1e293b";
+            printContainer.style.fontFamily = "'Poppins', sans-serif";
+
+            printContainer.innerHTML = `
+                <!-- Cabecera Oficial ETPMA -->
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #0ea5e9; padding-bottom: 20px; margin-bottom: 25px;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <img src="logo.jpg" style="height: 70px; width: auto;" alt="Escudo">
+                        <div>
+                            <h4 style="margin: 0; font-size: 10px; color: #64748b; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;">E.T.P. María Auxiliadora</h4>
+                            <h1 style="margin: 0; font-size: 20px; color: #0f172a; font-weight: 900; text-transform: uppercase;">Reporte Vocacional</h1>
+                        </div>
+                    </div>
+                    <img src="lema.jpg" style="height: 50px; width: auto;" alt="Lema">
+                </div>
+
+                <!-- Ficha del Estudiante -->
+                <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-bottom: 25px;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 12px; line-height: 1.8;">
+                        <tr>
+                            <td style="width: 50%;"><strong>Estudiante:</strong> ${estudianteActual.nombre}</td>
+                            <td style="width: 50%;"><strong>Cédula:</strong> ${estudianteActual.cedula}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Edad:</strong> ${estudianteActual.edad} años</td>
+                            <td><strong>Sección:</strong> ${estudianteActual.seccion}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><strong>Fecha de Evaluación:</strong> ${estudianteActual.fecha}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Porcentajes de Afinidad -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="font-size: 14px; color: #334155; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">📊 Porcentajes de Afinidad Vocacional</h3>
+                    
+                    <!-- Barra Salud -->
+                    <div style="margin-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 5px;">
+                            <span>Área de la Salud (Enfermería / Registro)</span>
+                            <span style="color: #059669; font-weight: 800;">${estudianteActual.p_salud}%</span>
+                        </div>
+                        <div style="background-color: #e2e8f0; border-radius: 9999px; height: 12px; overflow: hidden;">
+                            <div style="background-color: #10b981; height: 100%; width: ${estudianteActual.p_salud}%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Barra Economía -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 5px;">
+                            <span>Área de Economía Social (Administración / Contabilidad)</span>
+                            <span style="color: #d97706; font-weight: 800;">${estudianteActual.p_economia}%</span>
+                        </div>
+                        <div style="background-color: #e2e8f0; border-radius: 9999px; height: 12px; overflow: hidden;">
+                            <div style="background-color: #f59e0b; height: 100%; width: ${estudianteActual.p_economia}%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sugerencia y Recomendación -->
+                <div style="border: 2px dashed #0ea5e9; background-color: #f0f9ff; border-radius: 16px; padding: 20px; text-align: center; margin-bottom: 30px;">
+                    <span style="font-size: 24px;">⭐</span>
+                    <h2 style="font-size: 16px; font-weight: 900; color: #0369a1; margin-top: 5px; text-transform: uppercase;">Mención Sugerida</h2>
+                    <h3 style="font-size: 15px; font-weight: 800; color: #0f172a; margin-top: 5px;">${estudianteActual.mencion}</h3>
+                    <p style="font-size: 11px; color: #475569; line-height: 1.6; margin-top: 10px; text-align: justify; padding: 0 10px;">${estudianteActual.descripcion}</p>
+                </div>
+
+                <!-- Pie del Reporte -->
+                <div style="text-align: center; font-size: 9px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: auto;">
+                    Documento oficial emitido por el Departamento de Orientación de la Escuela Técnica Popular María Auxiliadora.<br>
+                    <strong>"Buenos Cristianos, Honestos Ciudadanos y Profesionales de Calidad al Servicio de la Vida."</strong>
+                </div>
+            `;
+
             const opciones = {
-                margin: 0,
-                filename: `Reporte_Vocacional_${estudianteActual.cedula || 'Estudiante'}.pdf`,
+                margin: 10,
+                filename: `Reporte_Vocacional_${estudianteActual.cedula}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2, useCORS: true, logging: false },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            // Ejecuta html2pdf apuntando a la estructura oculta de rendering
-            html2pdf().set(opciones).from(elemento).save();
+            // Ejecuta el renderizado de forma fluida e instantánea
+            html2pdf().set(opciones).from(printContainer).save();
         }
 
         function descargarExcelCompleto() {
             if (baseDatosHistorica.length === 0) {
-                alert("Aún no existen registros de pruebas en este navegador.");
+                alert("Aún no existen registros de pruebas guardadas.");
                 return;
             }
 
-            // Mapeo limpio de los nombres de cabeceras para el archivo de Excel
             const registrosFormateados = baseDatosHistorica.map((reg, index) => ({
                 "N°": index + 1,
                 "Fecha de Evaluación": reg.fecha,
@@ -603,12 +603,10 @@
                 "Mención Sugerida": reg.mencion
             }));
 
-            // Convertir JSON a Hoja de Excel y descargar
             const worksheet = XLSX.utils.json_to_sheet(registrosFormateados);
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Resultados");
 
-            // Guardar con nombre descriptivo de la institución
             XLSX.writeFile(workbook, `BD_Orientacion_Vocacional_ETPMA.xlsx`);
         }
     </script>
