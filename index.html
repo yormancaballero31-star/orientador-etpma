@@ -43,7 +43,7 @@
                     <img src="logo.jpg" alt="Escudo E.T.P. María Auxiliadora" class="max-w-full max-h-full object-contain logo-blend">
                 </div>
                 
-                <!-- Título Principal Llamativo -->
+                <!-- Título Principal -->
                 <div class="text-center sm:text-left flex-grow">
                     <div class="text-[10px] bg-sky-500/20 text-sky-300 font-extrabold px-2.5 py-1 rounded-full uppercase tracking-widest inline-block mb-2">
                         E.T.P. María Auxiliadora • Altamira
@@ -58,13 +58,11 @@
                 </div>
             </div>
 
-            <!-- Bloque Derecho: Ilustración Digital y Frase Motivacional (5/12 de espacio) -->
+            <!-- Bloque Derecho: Ilustración Digital y Frase Motivacional -->
             <div class="md:col-span-5 border-t md:border-t-0 md:border-l border-slate-700/50 relative overflow-hidden flex items-center justify-center p-6 min-h-[140px] md:min-h-0 tech-pattern">
-                <!-- Efecto de brillo neón de fondo -->
                 <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-sky-500/20 rounded-full blur-3xl"></div>
                 <div class="absolute -left-10 -top-10 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl"></div>
                 
-                <!-- Contenedor de Textos Motivacionales -->
                 <div class="text-center md:text-left z-10 max-w-xs">
                     <div class="flex items-center justify-center md:justify-start gap-2 text-sky-400 mb-1.5 font-bold text-xs uppercase tracking-widest">
                         <span class="animate-pulse">⚡</span> <span id="motivo-tag">Área de Inspiración</span>
@@ -112,10 +110,9 @@
                 </button>
             </form>
 
-            <!-- Cinta Institucional del Lema -->
             <div class="mt-8 pt-6 border-t border-slate-100 flex justify-center">
                 <div class="w-full bg-[#fcfcfc] rounded-2xl p-4 border border-slate-150/80 shadow-sm flex items-center justify-center transition-all hover:shadow-md">
-                    <img src="lema.jpg" alt="Lema Institucional y Sistema Preventivo Salesiano" class="w-full h-auto max-h-24 md:max-h-28 object-contain logo-blend">
+                    <img src="lema.jpg" alt="Lema Institucional" class="w-full h-auto max-h-24 md:max-h-28 object-contain logo-blend">
                 </div>
             </div>
         </div>
@@ -144,7 +141,6 @@
                 <p class="text-slate-500 text-sm mt-1">Aquí tienes tu perfil vocacional sugerido según tus respuestas.</p>
             </div>
 
-            <!-- Diagnóstico de Especialidades -->
             <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 mb-6">
                 <h3 class="text-sm font-black text-slate-700 uppercase tracking-wider mb-4 flex items-center gap-2">
                     📊 Tu porcentaje de afinidad:
@@ -173,7 +169,6 @@
                 </div>
             </div>
 
-            <!-- Sugerencia Específica -->
             <div class="border-t border-slate-100 pt-4 mb-6">
                 <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Mención Especializada Recomendada:</h4>
                 <div id="mencion-tarjeta" class="p-5 rounded-2xl bg-[#f8fafc] border-2 border-sky-100">
@@ -182,7 +177,6 @@
                 </div>
             </div>
 
-            <!-- Botones de Acción Estudiantes -->
             <div class="flex flex-col sm:flex-row gap-3">
                 <button onclick="reiniciarTest()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3.5 px-4 rounded-xl transition text-sm">
                     Repetir Test 🔄
@@ -203,8 +197,8 @@
 
     </div>
 
-    <!-- ================= CONTENEDOR OCULTO PARA EL DISEÑO DEL PDF ================= -->
-    <div id="plantilla-pdf" class="hidden">
+    <!-- ================= CONTENEDOR DE RENDERING (Se mantiene siempre "dibujado" pero oculto a la izquierda para evitar PDFs en blanco) ================= -->
+    <div id="plantilla-pdf" style="position: absolute; left: -9999px; top: 0; width: 750px; background-color: #ffffff; box-sizing: border-box;">
         <div style="padding: 40px; font-family: 'Poppins', sans-serif; color: #1e293b; background-color: #ffffff;">
             
             <!-- Cabecera Oficial ETPMA -->
@@ -259,7 +253,7 @@
             <div style="border: 2px dashed #0ea5e9; background-color: #f0f9ff; border-radius: 16px; padding: 20px; text-align: center;">
                 <span style="font-size: 24px;">⭐</span>
                 <h2 style="font-size: 16px; font-weight: 900; color: #0369a1; margin-top: 5px; text-transform: uppercase;">Mención Sugerida</h2>
-                <h3 id="pdf-mencion-titulo" style="font-size: 15px; font-weight: 800; color: #0f172a; margin-top: 5px;">Mención recomendada aquí</h3>
+                <h3 id="pdf-mencion-titulo" style="font-size: 15px; font-weight: 800; color: #0f172a; margin-top: 5px;">Mención recomendada</h3>
                 <p id="pdf-mencion-desc" style="font-size: 11px; color: #475569; line-height: 1.6; margin-top: 10px; text-align: justify; padding: 0 10px;"></p>
             </div>
 
@@ -544,8 +538,9 @@
             actualizarPanelMotivacional("resultados");
         }
 
-        // ================= FUNCIÓN CORREGIDA SIN CARACTERES ESPECIALES (PDF) =================
+        // ================= GENERACIÓN INTEGRAL DE PDF (Optimizado para teléfonos) =================
         function generarReportePDF() {
+            // Llenamos el contenedor "off-screen" con los datos dinámicos antes de procesarlo
             document.getElementById("pdf-nombre").innerText = estudianteActual.nombre;
             document.getElementById("pdf-cedula").innerText = estudianteActual.cedula;
             document.getElementById("pdf-edad").innerText = estudianteActual.edad;
@@ -561,11 +556,9 @@
             document.getElementById("pdf-mencion-desc").innerText = estudianteActual.mencionSugeridaDesc;
 
             const element = document.getElementById("plantilla-pdf");
-            element.classList.remove("hidden");
-
-            // Limpiamos el nombre para el archivo final sin usar comillas invertidas conflictivas
             const nombreArchivo = 'Reporte_Vocacional_' + estudianteActual.nombre.replace(/\s+/g, '_') + '.pdf';
 
+            // Configuración óptima para teléfonos celulares
             const opcionesPDF = {
                 margin:       10,
                 filename:     nombreArchivo,
@@ -573,15 +566,14 @@
                 html2canvas:  { 
                     scale: 2, 
                     useCORS: true,
-                    scrollX: 0,
-                    scrollY: -window.scrollY
+                    letterRendering: true,
+                    logging: false
                 },
                 jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
             };
 
-            html2pdf().set(opcionesPDF).from(element).save().then(function() {
-                element.classList.add("hidden");
-            });
+            // Ejecuta el guardado directamente sobre el elemento ya renderizado en el fondo
+            html2pdf().set(opcionesPDF).from(element).save();
         }
 
         // ================= EXPORTACIÓN REAL A EXCEL PARA EL DOCENTE =================
