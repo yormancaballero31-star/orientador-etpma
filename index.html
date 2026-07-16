@@ -204,7 +204,6 @@
     </div>
 
     <!-- ================= CONTENEDOR OCULTO PARA EL DISEÑO DEL PDF ================= -->
-    <!-- Este contenedor no es visible en la app, se activa solo para renderizar el PDF impreso con logos oficiales -->
     <div id="plantilla-pdf" class="hidden">
         <div style="padding: 40px; font-family: 'Poppins', sans-serif; color: #1e293b; background-color: #ffffff;">
             
@@ -313,7 +312,7 @@
                 opciones: [
                     { texto: "Te acercas, lo acompañas a lavarse la herida y le pones una curita con cuidado.", valor: "enfermeria" },
                     { texto: "Vas rápido a la dirección a avisar y a buscar la ficha de emergencias de tu amigo.", valor: "registro" },
-                    { texto: "Tomas el control de la situación, calmas al grupo y buscas al profesor de guardia.", valor: "administracion" },
+                    { texto: "Tomás el control de la situación, calmas al grupo y buscas al profesor de guardia.", valor: "administracion" },
                     { texto: "Revisas si el botiquín tiene alcohol y cuentas cuántas vendas quedan para reponerlas luego.", valor: "contabilidad" }
                 ]
             },
@@ -545,44 +544,42 @@
             actualizarPanelMotivacional("resultados");
         }
 
-        // ================= FUNCIÓN PARA GENERAR EL REPORTE PDF (CON PARCHES PARA MÓVILES) =================
+        // ================= FUNCIÓN CORREGIDA SIN CARACTERES ESPECIALES (PDF) =================
         function generarReportePDF() {
-            // Rellenar datos en la plantilla oculta del PDF
             document.getElementById("pdf-nombre").innerText = estudianteActual.nombre;
             document.getElementById("pdf-cedula").innerText = estudianteActual.cedula;
             document.getElementById("pdf-edad").innerText = estudianteActual.edad;
             document.getElementById("pdf-seccion").innerText = estudianteActual.seccion;
             document.getElementById("pdf-fecha").innerText = estudianteActual.fecha;
 
-            document.getElementById("pdf-porc-salud").innerText = `${estudianteActual.porcSalud}%`;
-            document.getElementById("pdf-barra-salud").style.width = `${estudianteActual.porcSalud}%`;
-            document.getElementById("pdf-porc-economia").innerText = `${estudianteActual.porcEco}%`;
-            document.getElementById("pdf-barra-economia").style.width = `${estudianteActual.porcEco}%`;
+            document.getElementById("pdf-porc-salud").innerText = estudianteActual.porcSalud + '%';
+            document.getElementById("pdf-barra-salud").style.width = estudianteActual.porcSalud + '%';
+            document.getElementById("pdf-porc-economia").innerText = estudianteActual.porcEco + '%';
+            document.getElementById("pdf-barra-economia").style.width = estudianteActual.porcEco + '%';
 
             document.getElementById("pdf-mencion-titulo").innerText = estudianteActual.mencionSugerida;
             document.getElementById("pdf-mencion-desc").innerText = estudianteActual.mencionSugeridaDesc;
 
             const element = document.getElementById("plantilla-pdf");
-            
-            // Hacerlo visible temporalmente para que html2pdf lo renderice correctamente
             element.classList.remove("hidden");
 
-            // Configuración optimizada anti-hojas en blanco (Scroll fix)
+            // Limpiamos el nombre para el archivo final sin usar comillas invertidas conflictivas
+            const nombreArchivo = 'Reporte_Vocacional_' + estudianteActual.nombre.replace(/\s+/g, '_') + '.pdf';
+
             const opcionesPDF = {
                 margin:       10,
-                filename:     `Reporte_Vocacional_${estudianteActual.nombre.replace(/\s+/g, '_')}.pdf`,
+                filename:     nombreArchivo,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { 
                     scale: 2, 
                     useCORS: true,
-                    scrollX: 0,               // Evita desviaciones horizontales
-                    scrollY: -window.scrollY  // Resetea el scroll vertical para evitar capturar espacio en blanco
+                    scrollX: 0,
+                    scrollY: -window.scrollY
                 },
                 jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
             };
 
-            html2pdf().set(opcionesPDF).from(element).save().then(() => {
-                // Volver a ocultarlo después de la descarga
+            html2pdf().set(opcionesPDF).from(element).save().then(function() {
                 element.classList.add("hidden");
             });
         }
@@ -594,36 +591,35 @@
                 return;
             }
 
-            // Crear el libro de trabajo de Excel (Workbook)
             const wb = XLSX.utils.book_new();
 
-            // Formatear los datos para las columnas
-            const filas = baseDatosHistorica.map((est, i) => ({
-                "N°": i + 1,
-                "Fecha Evaluacion": est.fecha,
-                "Nombre y Apellido": est.nombre,
-                "Cedula": est.cedula,
-                "Edad": parseInt(est.edad),
-                "Seccion": est.seccion,
-                "Afinidad Salud (%)": est.porcSalud,
-                "Afinidad Economia (%)": est.porcEco,
-                "Mencion Recomendada": est.mencionSugerida
-            }));
+            const filas = baseDatosHistorica.map(function(est, i) {
+                return {
+                    "N°": i + 1,
+                    "Fecha Evaluacion": est.fecha,
+                    "Nombre y Apellido": est.nombre,
+                    "Cedula": est.cedula,
+                    "Edad": parseInt(est.edad),
+                    "Seccion": est.seccion,
+                    "Afinidad Salud (%)": est.porcSalud,
+                    "Afinidad Economia (%)": est.porcEco,
+                    "Mencion Recomendada": est.mencionSugerida
+                };
+            });
 
-            // Convertir JSON a Hoja de Cálculo
             const ws = XLSX.utils.json_to_sheet(filas);
 
-            // Ajustar el ancho de las columnas de forma automática
             const objectKeys = Object.keys(filas[0]);
-            ws["!cols"] = objectKeys.map(key => ({
-                wch: Math.max(...filas.map(row => row[key] ? row[key].toString().length : 0), key.length) + 3
-            }));
+            ws["!cols"] = objectKeys.map(function(key) {
+                return {
+                    wch: Math.max(...filas.map(function(row) {
+                        return row[key] ? row[key].toString().length : 0;
+                    }), key.length) + 3
+                };
+            });
 
-            // Añadir la hoja al libro de trabajo
             XLSX.utils.book_append_sheet(wb, ws, "Base de Datos ETPMA");
-
-            // Guardar el archivo final
-            XLSX.writeFile(wb, `BD_Orientacion_Maria_Auxiliadora.xlsx`);
+            XLSX.writeFile(wb, 'BD_Orientacion_Maria_Auxiliadora.xlsx');
         }
 
         function reiniciarTest() {
