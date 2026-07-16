@@ -321,7 +321,7 @@
                 id: 5,
                 pregunta: "Cuando trabajas en grupo, tus compañeros suelen buscarte porque tú eres muy bueno(a):",
                 opciones: [
-                    { texto: "Siendo empático, escuchando a todos y asegurando que nadie se sienta excluido.", valor: "enfermeria" },
+                    { texto: "Siendo empático, escuchando a todos y asegurando que nadie se sientas excluido.", valor: "enfermeria" },
                     { texto: "Ordenando la información, haciendo esquemas limpios y carpetas para no perder nada.", valor: "registro" },
                     { texto: "Repartiendo las tareas, animando al equipo y organizando el tiempo de entrega.", valor: "administracion" },
                     { texto: "Haciendo cálculos rápidos o cuadrando los gastos de la lámina de exposición.", valor: "contabilidad" }
@@ -545,7 +545,7 @@
             actualizarPanelMotivacional("resultados");
         }
 
-        // ================= FUNCIÓN PARA GENERAR EL REPORTE PDF DETALLADO =================
+        // ================= FUNCIÓN PARA GENERAR EL REPORTE PDF (CON PARCHES PARA MÓVILES) =================
         function generarReportePDF() {
             // Rellenar datos en la plantilla oculta del PDF
             document.getElementById("pdf-nombre").innerText = estudianteActual.nombre;
@@ -564,14 +564,20 @@
 
             const element = document.getElementById("plantilla-pdf");
             
-            // Hacerlo visible temporalmente para que html2pdf lo tome sin problemas
+            // Hacerlo visible temporalmente para que html2pdf lo renderice correctamente
             element.classList.remove("hidden");
 
+            // Configuración optimizada anti-hojas en blanco (Scroll fix)
             const opcionesPDF = {
                 margin:       10,
                 filename:     `Reporte_Vocacional_${estudianteActual.nombre.replace(/\s+/g, '_')}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
+                html2canvas:  { 
+                    scale: 2, 
+                    useCORS: true,
+                    scrollX: 0,               // Evita desviaciones horizontales
+                    scrollY: -window.scrollY  // Resetea el scroll vertical para evitar capturar espacio en blanco
+                },
                 jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
             };
 
