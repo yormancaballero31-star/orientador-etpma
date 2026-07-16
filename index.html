@@ -10,7 +10,8 @@
     
     <!-- Librerías para exportar de forma nativa -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- XLSX con soporte de estilos y formato de tablas -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 
     <style>
         body {
@@ -26,10 +27,10 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-2 sm:p-4">
+<body class="min-h-screen flex flex-col items-center justify-center p-2 sm:p-4">
 
     <!-- Tarjeta Principal -->
-    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden border border-slate-200 my-4">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden border border-slate-200 my-4 z-10">
         
         <!-- Encabezado de Dos Columnas -->
         <div class="bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a] text-white relative grid grid-cols-1 md:grid-cols-12 border-b-4 border-sky-500">
@@ -195,9 +196,99 @@
 
     </div>
 
+    <!-- ================= CONTENEDOR FÍSICO DE RENDERIZADO DEL PDF ================= -->
+    <!-- Se mantiene en el DOM con opacidad cero y fuera del flujo visual de la pantalla para evitar colisiones móviles -->
+    <div style="position: absolute; left: 0; top: 0; width: 794px; height: 1123px; opacity: 0; pointer-events: none; overflow: hidden; z-index: -50;">
+        <div id="plantilla-pdf" style="width: 794px; min-height: 1123px; padding: 50px; box-sizing: border-box; background-color: #ffffff; color: #1e293b; font-family: 'Poppins', sans-serif;">
+            
+            <!-- Cabecera Oficial ETPMA -->
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid #0ea5e9; padding-bottom: 20px; margin-bottom: 35px;">
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <img src="logo.jpg" style="height: 80px; width: auto;" alt="Escudo">
+                    <div>
+                        <h4 style="margin: 0; font-size: 11px; color: #64748b; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;">E.T.P. María Auxiliadora</h4>
+                        <h1 style="margin: 0; font-size: 24px; color: #0f172a; font-weight: 900; text-transform: uppercase;">Reporte Vocacional</h1>
+                    </div>
+                </div>
+                <img src="lema.jpg" style="height: 55px; width: auto;" alt="Lema">
+            </div>
+
+            <!-- Ficha de Datos Personales -->
+            <div style="background-color: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 20px; margin-bottom: 35px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 13px; line-height: 2;">
+                    <tr>
+                        <td style="width: 50%;"><strong>Estudiante:</strong> <span id="pdf-nombre" style="color: #0f172a;"></span></td>
+                        <td style="width: 50%;"><strong>Cédula:</strong> <span id="pdf-cedula" style="color: #0f172a;"></span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Edad:</strong> <span id="pdf-edad"></span> años</td>
+                        <td><strong>Sección:</strong> <span id="pdf-seccion"></span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border-t: 1px solid #e2e8f0; padding-top: 5px; margin-top: 5px;"><strong>Fecha de Evaluación:</strong> <span id="pdf-fecha"></span></td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Porcentajes de Afinidad -->
+            <div style="margin-bottom: 35px;">
+                <h3 style="font-size: 15px; color: #334155; font-weight: 800; text-transform: uppercase; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">📊 Resultados de Afinidad</h3>
+                
+                <!-- Barra Salud -->
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; margin-bottom: 6px;">
+                        <span>Área de la Salud (Enfermería / Registro)</span>
+                        <span id="pdf-porc-salud" style="color: #059669; font-weight: 900;">0%</span>
+                    </div>
+                    <div style="background-color: #e2e8f0; border-radius: 9999px; height: 14px; overflow: hidden;">
+                        <div id="pdf-barra-salud" style="background-color: #10b981; height: 100%; width: 0%;"></div>
+                    </div>
+                </div>
+
+                <!-- Barra Economía -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; margin-bottom: 6px;">
+                        <span>Área de Economía Social (Administración / Contabilidad)</span>
+                        <span id="pdf-porc-economia" style="color: #d97706; font-weight: 900;">0%</span>
+                    </div>
+                    <div style="background-color: #e2e8f0; border-radius: 9999px; height: 14px; overflow: hidden;">
+                        <div id="pdf-barra-economia" style="background-color: #f59e0b; height: 100%; width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sugerencia Profesional Destacada -->
+            <div style="border: 2px dashed #0ea5e9; background-color: #f0f9ff; border-radius: 20px; padding: 25px; text-align: center; margin-bottom: 40px;">
+                <span style="font-size: 28px;">⭐</span>
+                <h2 style="font-size: 16px; font-weight: 900; color: #0369a1; margin-top: 5px; text-transform: uppercase; letter-spacing: 0.5px;">Mención Técnica Sugerida</h2>
+                <h3 id="pdf-mencion-titulo" style="font-size: 17px; font-weight: 800; color: #0f172a; margin-top: 8px;">Mención</h3>
+                <p id="pdf-mencion-desc" style="font-size: 11.5px; color: #475569; line-height: 1.7; margin-top: 12px; text-align: justify; padding: 0 15px;"></p>
+            </div>
+
+            <!-- Firma del Departamento de Orientación -->
+            <div style="margin-top: 60px; display: flex; justify-content: space-around; align-items: center;">
+                <div style="text-align: center; width: 220px;">
+                    <div style="border-top: 1px solid #94a3b8; margin-bottom: 5px;"></div>
+                    <span style="font-size: 10px; color: #64748b; font-weight: 600;">Sello Institucional</span>
+                </div>
+                <div style="text-align: center; width: 220px;">
+                    <div style="border-top: 1px solid #94a3b8; margin-bottom: 5px;"></div>
+                    <span style="font-size: 10px; color: #64748b; font-weight: 600;">Firma del Orientador</span>
+                </div>
+            </div>
+
+            <!-- Pie del Reporte Fijo -->
+            <div style="position: absolute; bottom: 50px; left: 50px; right: 50px; text-align: center; font-size: 9.5px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+                E.T.P. María Auxiliadora • Chacao, Miranda, Venezuela<br>
+                <strong>"Buenos Cristianos, Honestos Ciudadanos y Profesionales de Calidad al Servicio de la Vida."</strong>
+            </div>
+
+        </div>
+    </div>
+
     <!-- Script de lógica de la aplicación -->
     <script>
-        // Base de Datos de Preguntas (12 preguntas)
+        // Banco de Preguntas (12 reactivos de alta precisión)
         const preguntas = [
             {
                 id: 1,
@@ -321,7 +412,7 @@
             }
         ];
 
-        // Menciones y sus perfiles
+        // Menciones y sus perfiles institucionales
         const perfiles = {
             enfermeria: {
                 titulo: "SALUD - Mención Enfermería",
@@ -345,7 +436,7 @@
         let respuestasEstudiante = [];
         let preguntaActualIdx = 0;
 
-        // Base de Datos en LocalStorage
+        // Carga o inicialización de la Base de Datos Local
         let baseDatosHistorica = JSON.parse(localStorage.getItem("bd_orientacion_auxiliadora")) || [];
 
         const frasesMotivacionales = {
@@ -376,21 +467,21 @@
             document.getElementById(id).classList.remove("hidden");
         }
 
-        // VALIDACIÓN DE UN SÓLO INTENTO RIGUROSA
+        // CONTROL RIGUROSO DE DUPLICADOS (Cédula de un único intento)
         function validarEIniciarTest(e) {
             e.preventDefault();
             
             const cedulaIngresada = document.getElementById("cedula").value.trim();
             
-            // Verificar si la cédula ya existe en los registros guardados
+            // Verificación rígida en LocalStorage
             const estudianteDuplicado = baseDatosHistorica.find(est => est.cedula === cedulaIngresada);
             
             if (estudianteDuplicado) {
-                alert(`⚠️ ACCESO RESTRINGIDO: El estudiante con Cédula/ID ${cedulaIngresada} ya ha presentado este test vocacional el día ${estudianteDuplicado.fecha}. No es posible repetir la prueba.`);
+                alert(`⚠️ ACCESO RESTRINGIDO: El estudiante con Cédula/ID ${cedulaIngresada} ya ha presentado este test vocacional el día ${estudianteDuplicado.fecha}. No es posible repetir la evaluación.`);
                 return;
             }
 
-            // Si no está duplicado, inicializa el flujo
+            // Inicialización de datos del alumno
             estudianteActual = {
                 nombre: document.getElementById("nombre").value.trim(),
                 cedula: cedulaIngresada,
@@ -457,6 +548,7 @@
                     maxVotos = conteo[mencion];
                     mencionGanadora = mencion;
                 } else if (conteo[mencion] === maxVotos) {
+                    // Criterio de desempate predeterminado por el modelo pedagógico
                     if (mencion === "enfermeria" && mencionGanadora === "registro") mencionGanadora = "enfermeria"; 
                     if (mencion === "administracion" && mencionGanadora === "contabilidad") mencionGanadora = "administracion";
                 }
@@ -467,11 +559,11 @@
             estudianteActual.mencion = perfiles[mencionGanadora].titulo;
             estudianteActual.descripcion = perfiles[mencionGanadora].descripcion;
 
-            // Almacenamiento definitivo de datos
+            // Guardar permanentemente en almacenamiento local
             baseDatosHistorica.push(estudianteActual);
             localStorage.setItem("bd_orientacion_auxiliadora", JSON.stringify(baseDatosHistorica));
 
-            // Cargar en la interfaz
+            // Cargar datos en pantalla de interfaz
             document.getElementById("resultado-nombre").innerText = estudianteActual.nombre;
             document.getElementById("porcentaje-salud").innerText = `${porcSalud}%`;
             document.getElementById("barra-salud").style.width = `${porcSalud}%`;
@@ -480,6 +572,21 @@
 
             document.getElementById("mencion-titulo").innerText = estudianteActual.mencion;
             document.getElementById("mencion-descripcion").innerText = estudianteActual.descripcion;
+
+            // Actualizar elementos de la plantilla física de PDF
+            document.getElementById("pdf-nombre").innerText = estudianteActual.nombre;
+            document.getElementById("pdf-cedula").innerText = estudianteActual.cedula;
+            document.getElementById("pdf-edad").innerText = estudianteActual.edad;
+            document.getElementById("pdf-seccion").innerText = estudianteActual.seccion;
+            document.getElementById("pdf-fecha").innerText = estudianteActual.fecha;
+
+            document.getElementById("pdf-porc-salud").innerText = `${porcSalud}%`;
+            document.getElementById("pdf-barra-salud").style.width = `${porcSalud}%`;
+            document.getElementById("pdf-porc-economia").innerText = `${porcEconomia}%`;
+            document.getElementById("pdf-barra-economia").style.width = `${porcEconomia}%`;
+
+            document.getElementById("pdf-mencion-titulo").innerText = estudianteActual.mencion;
+            document.getElementById("pdf-mencion-desc").innerText = estudianteActual.descripcion;
 
             mostrarPantalla("pantalla-resultados");
             actualizarPanelMotivacional("resultados");
@@ -491,123 +598,147 @@
             actualizarPanelMotivacional("registro");
         }
 
-        // GENERACIÓN DINÁMICA DE PDF (Soluciona hojas en blanco en navegadores y móviles)
+        // EXPORTADOR PREMIUM DE PDF CORREGIDO (Resuelve pantallas en blanco de móviles)
         function generarReportePDF() {
-            // Creamos un contenedor temporal en memoria sin interferir con el viewport activo
-            const printContainer = document.createElement("div");
-            printContainer.style.width = "750px";
-            printContainer.style.padding = "40px";
-            printContainer.style.backgroundColor = "#ffffff";
-            printContainer.style.color = "#1e293b";
-            printContainer.style.fontFamily = "'Poppins', sans-serif";
-
-            printContainer.innerHTML = `
-                <!-- Cabecera Oficial ETPMA -->
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #0ea5e9; padding-bottom: 20px; margin-bottom: 25px;">
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <img src="logo.jpg" style="height: 70px; width: auto;" alt="Escudo">
-                        <div>
-                            <h4 style="margin: 0; font-size: 10px; color: #64748b; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;">E.T.P. María Auxiliadora</h4>
-                            <h1 style="margin: 0; font-size: 20px; color: #0f172a; font-weight: 900; text-transform: uppercase;">Reporte Vocacional</h1>
-                        </div>
-                    </div>
-                    <img src="lema.jpg" style="height: 50px; width: auto;" alt="Lema">
-                </div>
-
-                <!-- Ficha del Estudiante -->
-                <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-bottom: 25px;">
-                    <table style="width: 100%; border-collapse: collapse; font-size: 12px; line-height: 1.8;">
-                        <tr>
-                            <td style="width: 50%;"><strong>Estudiante:</strong> ${estudianteActual.nombre}</td>
-                            <td style="width: 50%;"><strong>Cédula:</strong> ${estudianteActual.cedula}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Edad:</strong> ${estudianteActual.edad} años</td>
-                            <td><strong>Sección:</strong> ${estudianteActual.seccion}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"><strong>Fecha de Evaluación:</strong> ${estudianteActual.fecha}</td>
-                        </tr>
-                    </table>
-                </div>
-
-                <!-- Porcentajes de Afinidad -->
-                <div style="margin-bottom: 30px;">
-                    <h3 style="font-size: 14px; color: #334155; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">📊 Porcentajes de Afinidad Vocacional</h3>
-                    
-                    <!-- Barra Salud -->
-                    <div style="margin-bottom: 15px;">
-                        <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 5px;">
-                            <span>Área de la Salud (Enfermería / Registro)</span>
-                            <span style="color: #059669; font-weight: 800;">${estudianteActual.p_salud}%</span>
-                        </div>
-                        <div style="background-color: #e2e8f0; border-radius: 9999px; height: 12px; overflow: hidden;">
-                            <div style="background-color: #10b981; height: 100%; width: ${estudianteActual.p_salud}%;"></div>
-                        </div>
-                    </div>
-
-                    <!-- Barra Economía -->
-                    <div>
-                        <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 5px;">
-                            <span>Área de Economía Social (Administración / Contabilidad)</span>
-                            <span style="color: #d97706; font-weight: 800;">${estudianteActual.p_economia}%</span>
-                        </div>
-                        <div style="background-color: #e2e8f0; border-radius: 9999px; height: 12px; overflow: hidden;">
-                            <div style="background-color: #f59e0b; height: 100%; width: ${estudianteActual.p_economia}%;"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sugerencia y Recomendación -->
-                <div style="border: 2px dashed #0ea5e9; background-color: #f0f9ff; border-radius: 16px; padding: 20px; text-align: center; margin-bottom: 30px;">
-                    <span style="font-size: 24px;">⭐</span>
-                    <h2 style="font-size: 16px; font-weight: 900; color: #0369a1; margin-top: 5px; text-transform: uppercase;">Mención Sugerida</h2>
-                    <h3 style="font-size: 15px; font-weight: 800; color: #0f172a; margin-top: 5px;">${estudianteActual.mencion}</h3>
-                    <p style="font-size: 11px; color: #475569; line-height: 1.6; margin-top: 10px; text-align: justify; padding: 0 10px;">${estudianteActual.descripcion}</p>
-                </div>
-
-                <!-- Pie del Reporte -->
-                <div style="text-align: center; font-size: 9px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: auto;">
-                    Documento oficial emitido por el Departamento de Orientación de la Escuela Técnica Popular María Auxiliadora.<br>
-                    <strong>"Buenos Cristianos, Honestos Ciudadanos y Profesionales de Calidad al Servicio de la Vida."</strong>
-                </div>
-            `;
-
+            const elemento = document.getElementById("plantilla-pdf");
+            
             const opciones = {
-                margin: 10,
+                margin: 0,
                 filename: `Reporte_Vocacional_${estudianteActual.cedula}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, logging: false },
+                html2canvas: { 
+                    scale: 2, 
+                    useCORS: true, 
+                    logging: false,
+                    letterRendering: true,
+                    allowTaint: true
+                },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            // Ejecuta el renderizado de forma fluida e instantánea
-            html2pdf().set(opciones).from(printContainer).save();
+            // Guarda directamente sin distorsiones
+            html2pdf().set(opciones).from(elemento).save();
         }
 
+        // GENERACIÓN DE TABLA DINÁMICA CON ESTILO CORPORATIVO EN EXCEL
         function descargarExcelCompleto() {
             if (baseDatosHistorica.length === 0) {
-                alert("Aún no existen registros de pruebas guardadas.");
+                alert("Aún no existen registros de pruebas en este navegador.");
                 return;
             }
 
-            const registrosFormateados = baseDatosHistorica.map((reg, index) => ({
-                "N°": index + 1,
-                "Fecha de Evaluación": reg.fecha,
-                "Nombre y Apellido": reg.nombre,
-                "Cédula": reg.cedula,
-                "Edad": reg.edad,
-                "Sección": reg.seccion,
-                "Afinidad Salud (%)": reg.p_salud,
-                "Afinidad Economía (%)": reg.p_economia,
-                "Mención Sugerida": reg.mencion
-            }));
+            // Datos ordenados para verter en la hoja
+            const headers = [
+                "N°", 
+                "Fecha de Evaluación", 
+                "Nombre y Apellido", 
+                "Cédula", 
+                "Edad", 
+                "Sección", 
+                "Afinidad Salud (%)", 
+                "Afinidad Economía (%)", 
+                "Mención Sugerida"
+            ];
 
-            const worksheet = XLSX.utils.json_to_sheet(registrosFormateados);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Resultados");
+            const rows = baseDatosHistorica.map((reg, index) => [
+                index + 1,
+                reg.fecha,
+                reg.nombre,
+                reg.cedula,
+                parseInt(reg.edad),
+                reg.seccion,
+                reg.p_salud / 100, // Almacenar como decimal para que Excel entienda el formato porcentual
+                reg.p_economia / 100,
+                reg.mencion
+            ]);
 
-            XLSX.writeFile(workbook, `BD_Orientacion_Vocacional_ETPMA.xlsx`);
+            // Crear libro vacío
+            const wb = XLSX.utils.book_new();
+            
+            // Construir matriz cruda incluyendo cabeceras
+            const dataMatrix = [headers, ...rows];
+            const ws = XLSX.utils.aoa_to_sheet(dataMatrix);
+
+            // DISEÑO DEL FORMATO: Paleta ETPMA (Fondo #0F172A, texto blanco para cabecera)
+            const styleHeader = {
+                fill: { fgColor: { rgb: "0F172A" } },
+                font: { name: "Arial", sz: 11, bold: true, color: { rgb: "FFFFFF" } },
+                alignment: { vertical: "center", horizontal: "center", wrapText: true },
+                border: {
+                    top: { style: "thin", color: { rgb: "475569" } },
+                    bottom: { style: "medium", color: { rgb: "0EA5E9" } },
+                    left: { style: "thin", color: { rgb: "475569" } },
+                    right: { style: "thin", color: { rgb: "475569" } }
+                }
+            };
+
+            const styleRowEven = {
+                fill: { fgColor: { rgb: "F8FAFC" } }, // Fila Cebra clara
+                font: { name: "Arial", sz: 10 },
+                alignment: { vertical: "center", horizontal: "left" },
+                border: {
+                    top: { style: "thin", color: { rgb: "E2E8F0" } },
+                    bottom: { style: "thin", color: { rgb: "E2E8F0" } },
+                    left: { style: "thin", color: { rgb: "E2E8F0" } },
+                    right: { style: "thin", color: { rgb: "E2E8F0" } }
+                }
+            };
+
+            const styleRowOdd = {
+                fill: { fgColor: { rgb: "FFFFFF" } }, // Fila blanca
+                font: { name: "Arial", sz: 10 },
+                alignment: { vertical: "center", horizontal: "left" },
+                border: {
+                    top: { style: "thin", color: { rgb: "E2E8F0" } },
+                    bottom: { style: "thin", color: { rgb: "E2E8F0" } },
+                    left: { style: "thin", color: { rgb: "E2E8F0" } },
+                    right: { style: "thin", color: { rgb: "E2E8F0" } }
+                }
+            };
+
+            // Recorrer celdas para inyectar los estilos y formatos correctos
+            const range = XLSX.utils.decode_range(ws['!ref']);
+            for (let R = range.s.r; R <= range.e.r; ++R) {
+                for (let C = range.s.c; C <= range.e.c; ++C) {
+                    const cellRef = XLSX.utils.encode_cell({ r: R, c: C });
+                    if (!ws[cellRef]) continue;
+
+                    // Si es fila de cabecera
+                    if (R === 0) {
+                        ws[cellRef].s = styleHeader;
+                    } else {
+                        // Selección de fila cebra
+                        const currentStyle = (R % 2 === 0) ? styleRowEven : styleRowOdd;
+                        ws[cellRef].s = JSON.parse(JSON.stringify(currentStyle)); // Clonar estilo base
+
+                        // Alineaciones y formatos especiales por columna
+                        if (C === 0 || C === 3 || C === 4 || C === 5) {
+                            ws[cellRef].s.alignment.horizontal = "center"; // Centrar ID, edad, sección
+                        }
+                        if (C === 6 || C === 7) {
+                            ws[cellRef].s.alignment.horizontal = "right";
+                            ws[cellRef].z = "0%"; // Formatear visualmente como porcentaje real en Excel
+                        }
+                    }
+                }
+            }
+
+            // Configurar anchos automáticos óptimos de columnas
+            ws['!cols'] = [
+                { wch: 6 },  // N°
+                { wch: 22 }, // Fecha
+                { wch: 30 }, // Nombre
+                { wch: 15 }, // Cédula
+                { wch: 8 },  // Edad
+                { wch: 10 }, // Sección
+                { wch: 18 }, // % Salud
+                { wch: 22 }, // % Economía
+                { wch: 38 }  // Mención
+            ];
+
+            // Añadir al libro y descargar
+            XLSX.utils.book_append_sheet(wb, ws, "Resultados");
+            XLSX.writeFile(wb, `BD_Orientacion_Vocacional_ETPMA.xlsx`);
         }
     </script>
 </body>
