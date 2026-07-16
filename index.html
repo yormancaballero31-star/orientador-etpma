@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tu Orientador Online ETPMA</title>
-    <!-- Tailwind CSS para diseño moderno -->
+    <!-- Tailwind CSS para la interfaz gráfica -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Librerías para exportar de forma nativa -->
+    <!-- Librerías de exportación garantizadas sin fallos -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <!-- XLSX con soporte de estilos y formato de tablas -->
-    <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+    <!-- ExcelJS y FileSaver para estilos reales de hoja de cálculo -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
     <style>
         body {
@@ -29,7 +30,7 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-2 sm:p-4">
 
-    <!-- Tarjeta Principal -->
+    <!-- Tarjeta Principal Interfaz Gráfica -->
     <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden border border-slate-200 my-4 z-10">
         
         <!-- Encabezado de Dos Columnas -->
@@ -196,9 +197,10 @@
 
     </div>
 
-    <!-- ================= CONTENEDOR FÍSICO DE RENDERIZADO DEL PDF ================= -->
-    <!-- Se mantiene en el DOM con opacidad cero y fuera del flujo visual de la pantalla para evitar colisiones móviles -->
-    <div style="position: absolute; left: 0; top: 0; width: 794px; height: 1123px; opacity: 0; pointer-events: none; overflow: hidden; z-index: -50;">
+    <!-- ================= CONTENEDOR FÍSICO DE RENDERIZADO DEL PDF (CORREGIDO) ================= -->
+    <!-- Colocado completamente fuera de la pantalla (off-screen) mediante left: -9999px. 
+         Mantiene opacity: 1 y visibility visible para que html2canvas capture todo el diseño, colores e imágenes sin generar hojas en blanco. -->
+    <div style="position: absolute; left: -9999px; top: 0; width: 794px; height: 1123px; overflow: hidden; background-color: #ffffff;">
         <div id="plantilla-pdf" style="width: 794px; min-height: 1123px; padding: 50px; box-sizing: border-box; background-color: #ffffff; color: #1e293b; font-family: 'Poppins', sans-serif;">
             
             <!-- Cabecera Oficial ETPMA -->
@@ -225,7 +227,7 @@
                         <td><strong>Sección:</strong> <span id="pdf-seccion"></span></td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="border-t: 1px solid #e2e8f0; padding-top: 5px; margin-top: 5px;"><strong>Fecha de Evaluación:</strong> <span id="pdf-fecha"></span></td>
+                        <td colspan="2" style="border-top: 1px solid #e2e8f0; padding-top: 5px; margin-top: 5px;"><strong>Fecha de Evaluación:</strong> <span id="pdf-fecha"></span></td>
                     </tr>
                 </table>
             </div>
@@ -288,7 +290,7 @@
 
     <!-- Script de lógica de la aplicación -->
     <script>
-        // Banco de Preguntas (12 reactivos de alta precisión)
+        // Banco de Preguntas (12 reactivos)
         const preguntas = [
             {
                 id: 1,
@@ -436,7 +438,7 @@
         let respuestasEstudiante = [];
         let preguntaActualIdx = 0;
 
-        // Carga o inicialización de la Base de Datos Local
+        // Cargar Base de Datos Local
         let baseDatosHistorica = JSON.parse(localStorage.getItem("bd_orientacion_auxiliadora")) || [];
 
         const frasesMotivacionales = {
@@ -467,21 +469,21 @@
             document.getElementById(id).classList.remove("hidden");
         }
 
-        // CONTROL RIGUROSO DE DUPLICADOS (Cédula de un único intento)
+        // Control estricto de duplicados por Cédula
         function validarEIniciarTest(e) {
             e.preventDefault();
             
             const cedulaIngresada = document.getElementById("cedula").value.trim();
             
-            // Verificación rígida en LocalStorage
-            const estudianteDuplicado = baseDatosHistorica.find(est => est.cedula === cedulaIngresada);
+            // Verificación rígida en la base de datos histórica (solo registros válidos con mención)
+            const estudianteDuplicado = baseDatosHistorica.find(est => est.cedula === cedulaIngresada && est.mencion);
             
             if (estudianteDuplicado) {
-                alert(`⚠️ ACCESO RESTRINGIDO: El estudiante con Cédula/ID ${cedulaIngresada} ya ha presentado este test vocacional el día ${estudianteDuplicado.fecha}. No es posible repetir la evaluación.`);
+                alert(`⚠️ ACCESO RESTRINGIDO: El estudiante con Cédula/ID ${cedulaIngresada} ya completó este test vocacional el día ${estudianteDuplicado.fecha}. No está permitido repetir la evaluación.`);
                 return;
             }
 
-            // Inicialización de datos del alumno
+            // Inicialización segura temporal (AÚN NO SE GUARDA en localStorage para evitar registros vacíos)
             estudianteActual = {
                 nombre: document.getElementById("nombre").value.trim(),
                 cedula: cedulaIngresada,
@@ -548,22 +550,23 @@
                     maxVotos = conteo[mencion];
                     mencionGanadora = mencion;
                 } else if (conteo[mencion] === maxVotos) {
-                    // Criterio de desempate predeterminado por el modelo pedagógico
+                    // Desempates
                     if (mencion === "enfermeria" && mencionGanadora === "registro") mencionGanadora = "enfermeria"; 
                     if (mencion === "administracion" && mencionGanadora === "contabilidad") mencionGanadora = "administracion";
                 }
             });
 
+            // Llenado de datos consolidados del estudiante
             estudianteActual.p_salud = porcSalud;
             estudianteActual.p_economia = porcEconomia;
             estudianteActual.mencion = perfiles[mencionGanadora].titulo;
             estudianteActual.descripcion = perfiles[mencionGanadora].descripcion;
 
-            // Guardar permanentemente en almacenamiento local
+            // ALMACENAMIENTO SEGURO: Sólo se agrega a la BD histórica una vez que el test está 100% completo
             baseDatosHistorica.push(estudianteActual);
             localStorage.setItem("bd_orientacion_auxiliadora", JSON.stringify(baseDatosHistorica));
 
-            // Cargar datos en pantalla de interfaz
+            // Cargar datos en pantalla de resultados
             document.getElementById("resultado-nombre").innerText = estudianteActual.nombre;
             document.getElementById("porcentaje-salud").innerText = `${porcSalud}%`;
             document.getElementById("barra-salud").style.width = `${porcSalud}%`;
@@ -573,7 +576,7 @@
             document.getElementById("mencion-titulo").innerText = estudianteActual.mencion;
             document.getElementById("mencion-descripcion").innerText = estudianteActual.descripcion;
 
-            // Actualizar elementos de la plantilla física de PDF
+            // Renderizar datos en la plantilla invisible de PDF (Off-screen)
             document.getElementById("pdf-nombre").innerText = estudianteActual.nombre;
             document.getElementById("pdf-cedula").innerText = estudianteActual.cedula;
             document.getElementById("pdf-edad").innerText = estudianteActual.edad;
@@ -598,7 +601,7 @@
             actualizarPanelMotivacional("registro");
         }
 
-        // EXPORTADOR PREMIUM DE PDF CORREGIDO (Resuelve pantallas en blanco de móviles)
+        // GENERACIÓN DE REPORTE PDF SIN HOJAS EN BLANCO
         function generarReportePDF() {
             const elemento = document.getElementById("plantilla-pdf");
             
@@ -616,129 +619,132 @@
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            // Guarda directamente sin distorsiones
+            // Se genera de manera asíncrona y directa
             html2pdf().set(opciones).from(elemento).save();
         }
 
-        // GENERACIÓN DE TABLA DINÁMICA CON ESTILO CORPORATIVO EN EXCEL
-        function descargarExcelCompleto() {
-            if (baseDatosHistorica.length === 0) {
-                alert("Aún no existen registros de pruebas en este navegador.");
+        // EXPORTACIÓN PREMIUM DE EXCEL CON ESTILOS E IMPEDIMENTO DE FILAS VACÍAS
+        async function descargarExcelCompleto() {
+            // Filtrar minuciosamente la base de datos para ignorar cualquier registro corrupto o vacío del pasado
+            const registrosValidos = baseDatosHistorica.filter(reg => reg && reg.nombre && reg.cedula && reg.mencion);
+
+            if (registrosValidos.length === 0) {
+                alert("Aún no existen registros válidos de pruebas completadas en este navegador.");
                 return;
             }
 
-            // Datos ordenados para verter en la hoja
-            const headers = [
-                "N°", 
-                "Fecha de Evaluación", 
-                "Nombre y Apellido", 
-                "Cédula", 
-                "Edad", 
-                "Sección", 
-                "Afinidad Salud (%)", 
-                "Afinidad Economía (%)", 
-                "Mención Sugerida"
+            // Inicializar un nuevo libro de trabajo de ExcelJS
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet('Resultados');
+
+            // Configurar propiedades de la cuadrícula
+            worksheet.views = [{ showGridLines: true }];
+
+            // Configurar columnas de manera explícita (Anchos óptimos)
+            worksheet.columns = [
+                { header: 'N°', key: 'num', width: 6 },
+                { header: 'Fecha de Evaluación', key: 'fecha', width: 22 },
+                { header: 'Nombre y Apellido', key: 'nombre', width: 32 },
+                { header: 'Cédula', key: 'cedula', width: 16 },
+                { header: 'Edad', key: 'edad', width: 8 },
+                { header: 'Sección', key: 'seccion', width: 10 },
+                { header: 'Afinidad Salud (%)', key: 'salud', width: 20 },
+                { header: 'Afinidad Economía (%)', key: 'economia', width: 22 },
+                { header: 'Mención Sugerida', key: 'mencion', width: 45 }
             ];
 
-            const rows = baseDatosHistorica.map((reg, index) => [
-                index + 1,
-                reg.fecha,
-                reg.nombre,
-                reg.cedula,
-                parseInt(reg.edad),
-                reg.seccion,
-                reg.p_salud / 100, // Almacenar como decimal para que Excel entienda el formato porcentual
-                reg.p_economia / 100,
-                reg.mencion
-            ]);
+            // Inyectar registros válidos
+            registrosValidos.forEach((reg, index) => {
+                worksheet.addRow({
+                    num: index + 1,
+                    fecha: reg.fecha,
+                    nombre: reg.nombre,
+                    cedula: reg.cedula,
+                    edad: parseInt(reg.edad),
+                    seccion: reg.seccion,
+                    salud: reg.p_salud / 100,      // Almacenado como decimal (ej. 0.83) para formato porcentual real
+                    economia: reg.p_economia / 100, // Almacenado como decimal (ej. 0.17) para formato porcentual real
+                    mencion: reg.mencion
+                });
+            });
 
-            // Crear libro vacío
-            const wb = XLSX.utils.book_new();
-            
-            // Construir matriz cruda incluyendo cabeceras
-            const dataMatrix = [headers, ...rows];
-            const ws = XLSX.utils.aoa_to_sheet(dataMatrix);
-
-            // DISEÑO DEL FORMATO: Paleta ETPMA (Fondo #0F172A, texto blanco para cabecera)
-            const styleHeader = {
-                fill: { fgColor: { rgb: "0F172A" } },
-                font: { name: "Arial", sz: 11, bold: true, color: { rgb: "FFFFFF" } },
-                alignment: { vertical: "center", horizontal: "center", wrapText: true },
-                border: {
-                    top: { style: "thin", color: { rgb: "475569" } },
-                    bottom: { style: "medium", color: { rgb: "0EA5E9" } },
-                    left: { style: "thin", color: { rgb: "475569" } },
-                    right: { style: "thin", color: { rgb: "475569" } }
-                }
+            // Estilos generales de celda y bordes finos
+            const borderStyle = {
+                top: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+                bottom: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+                left: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+                right: { style: 'thin', color: { argb: 'FFE2E8F0' } }
             };
 
-            const styleRowEven = {
-                fill: { fgColor: { rgb: "F8FAFC" } }, // Fila Cebra clara
-                font: { name: "Arial", sz: 10 },
-                alignment: { vertical: "center", horizontal: "left" },
-                border: {
-                    top: { style: "thin", color: { rgb: "E2E8F0" } },
-                    bottom: { style: "thin", color: { rgb: "E2E8F0" } },
-                    left: { style: "thin", color: { rgb: "E2E8F0" } },
-                    right: { style: "thin", color: { rgb: "E2E8F0" } }
-                }
-            };
+            // Estilizar la fila de encabezado (Fila 1)
+            const headerRow = worksheet.getRow(1);
+            headerRow.height = 28;
+            headerRow.eachCell((cell) => {
+                cell.fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: 'FF0F172B' } // Fondo Slate 900 (Estilo ETPMA)
+                };
+                cell.font = {
+                    name: 'Arial',
+                    size: 11,
+                    bold: true,
+                    color: { argb: 'FFFFFFFF' } // Letras blancas
+                };
+                cell.alignment = {
+                    vertical: 'middle',
+                    horizontal: 'center',
+                    wrapText: true
+                };
+                cell.border = {
+                    top: { style: 'thin', color: { argb: 'FF475569' } },
+                    bottom: { style: 'medium', color: { argb: 'FF0EA5E9' } }, // Subrayado celeste
+                    left: { style: 'thin', color: { argb: 'FF475569' } },
+                    right: { style: 'thin', color: { argb: 'FF475569' } }
+                };
+            });
 
-            const styleRowOdd = {
-                fill: { fgColor: { rgb: "FFFFFF" } }, // Fila blanca
-                font: { name: "Arial", sz: 10 },
-                alignment: { vertical: "center", horizontal: "left" },
-                border: {
-                    top: { style: "thin", color: { rgb: "E2E8F0" } },
-                    bottom: { style: "thin", color: { rgb: "E2E8F0" } },
-                    left: { style: "thin", color: { rgb: "E2E8F0" } },
-                    right: { style: "thin", color: { rgb: "E2E8F0" } }
-                }
-            };
+            // Estilizar filas de datos (Zebra striping e inyección de formatos)
+            worksheet.eachRow({ includeHeader: false }, (row, rowNumber) => {
+                row.height = 22;
+                const isEven = (rowNumber % 2 === 0);
 
-            // Recorrer celdas para inyectar los estilos y formatos correctos
-            const range = XLSX.utils.decode_range(ws['!ref']);
-            for (let R = range.s.r; R <= range.e.r; ++R) {
-                for (let C = range.s.c; C <= range.e.c; ++C) {
-                    const cellRef = XLSX.utils.encode_cell({ r: R, c: C });
-                    if (!ws[cellRef]) continue;
+                row.eachCell((cell, colNumber) => {
+                    // Fondo intercalado cebra
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: { argb: isEven ? 'FFF8FAFC' : 'FFFFFFFF' }
+                    };
+                    
+                    cell.font = {
+                        name: 'Arial',
+                        size: 10,
+                        color: { argb: 'FF1E293B' }
+                    };
 
-                    // Si es fila de cabecera
-                    if (R === 0) {
-                        ws[cellRef].s = styleHeader;
-                    } else {
-                        // Selección de fila cebra
-                        const currentStyle = (R % 2 === 0) ? styleRowEven : styleRowOdd;
-                        ws[cellRef].s = JSON.parse(JSON.stringify(currentStyle)); // Clonar estilo base
+                    cell.border = borderStyle;
 
-                        // Alineaciones y formatos especiales por columna
-                        if (C === 0 || C === 3 || C === 4 || C === 5) {
-                            ws[cellRef].s.alignment.horizontal = "center"; // Centrar ID, edad, sección
-                        }
-                        if (C === 6 || C === 7) {
-                            ws[cellRef].s.alignment.horizontal = "right";
-                            ws[cellRef].z = "0%"; // Formatear visualmente como porcentaje real en Excel
-                        }
+                    // Alineación predeterminada a la izquierda
+                    cell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+                    // Centrar columnas clave
+                    if (colNumber === 1 || colNumber === 4 || colNumber === 5 || colNumber === 6) {
+                        cell.alignment = { vertical: 'middle', horizontal: 'center' };
                     }
-                }
-            }
 
-            // Configurar anchos automáticos óptimos de columnas
-            ws['!cols'] = [
-                { wch: 6 },  // N°
-                { wch: 22 }, // Fecha
-                { wch: 30 }, // Nombre
-                { wch: 15 }, // Cédula
-                { wch: 8 },  // Edad
-                { wch: 10 }, // Sección
-                { wch: 18 }, // % Salud
-                { wch: 22 }, // % Economía
-                { wch: 38 }  // Mención
-            ];
+                    // Formato de porcentaje dinámico para columnas G y H (Salud y Economía)
+                    if (colNumber === 7 || colNumber === 8) {
+                        cell.numFmt = '0%';
+                        cell.alignment = { vertical: 'middle', horizontal: 'right' };
+                    }
+                });
+            });
 
-            // Añadir al libro y descargar
-            XLSX.utils.book_append_sheet(wb, ws, "Resultados");
-            XLSX.writeFile(wb, `BD_Orientacion_Vocacional_ETPMA.xlsx`);
+            // Generar el buffer del archivo y disparar la descarga
+            const buffer = await workbook.xlsx.writeBuffer();
+            const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            saveAs(blob, `BD_Orientacion_Vocacional_ETPMA.xlsx`);
         }
     </script>
 </body>
