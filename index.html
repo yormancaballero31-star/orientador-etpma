@@ -197,7 +197,7 @@
 
     </div>
 
-    <!-- ================= CONTENEDOR DE RENDERING (Se mantiene siempre "dibujado" pero oculto a la izquierda para evitar PDFs en blanco) ================= -->
+    <!-- ================= CONTENEDOR DE RENDERING PDF (Oculto a la izquierda de la pantalla) ================= -->
     <div id="plantilla-pdf" style="position: absolute; left: -9999px; top: 0; width: 750px; background-color: #ffffff; box-sizing: border-box;">
         <div style="padding: 40px; font-family: 'Poppins', sans-serif; color: #1e293b; background-color: #ffffff;">
             
@@ -395,20 +395,20 @@
         // Menciones y sus perfiles
         const perfiles = {
             enfermeria: {
-                titulo: "Especialidad: SALUD - Mención Enfermería",
-                descripcion: "Posees una fuerte vocación de servicio, empatía y sensibilidad hacia el dolor ajeno, esenciales en la teoría del cuidado humano. Tu perfil indica una clara inclinación por la atención directa, los primeros auxilios y la promoción de la salud comunitaria."
+                titulo: "SALUD - Mención Enfermería",
+                descripcion: "Posees una fuerte vocación de servicio, empatía y sensibilidad hacia el bienestar de los demás. Tu perfil indica una clara inclinación por la atención directa de pacientes, los primeros auxilios y la promoción de un estilo de vida saludable en el hogar y la comunidad."
             },
             registro: {
-                titulo: "Especialidad: SALUD - Mención Registro y Estadística de Salud",
-                descripcion: "Tu perfil destaca por la precisión, el orden metodológico y el gusto por la tecnología aplicada a la salud. Eres ideal para procesar historiales médicos y generar las estadísticas vitales indispensables para las políticas de salud pública del país."
+                titulo: "SALUD - Mención Registro y Estadística de Salud",
+                descripcion: "Tu perfil destaca por la precisión, el orden y el interés en procesar de forma rigurosa la información técnica. Eres ideal para el manejo de historiales clínicos, la digitalización de bases de datos de pacientes y la elaboración de las estadísticas esenciales para la toma de decisiones en el sector salud."
             },
             administracion: {
-                titulo: "Especialidad: ECONOMÍA SOCIAL - Mención Administración",
-                descripcion: "Muestras rasgos de liderazgo, pensamiento estratégico y toma de decisiones. Tienes aptitudes para coordinar equipos humanos, organizar recursos escasos y emprender proyectos productivos de impacto social."
+                titulo: "ECONOMÍA SOCIAL - Mención Administración",
+                descripcion: "Muestras claros rasgos de liderazgo, organización estratégica y toma de decisiones. Tienes una gran aptitud para coordinar equipos de trabajo, planificar proyectos escolares o comunitarios, y optimizar el uso de los recursos materiales y logísticos."
             },
             contabilidad: {
-                titulo: "Especialidad: ECONOMÍA SOCIAL - Mención Contabilidad",
-                descripcion: "Destacas por tu capacidad analítica, amor por los números y estructuración lógica. Tienes el perfil ideal para gestionar presupuestos, analizar flujos de caja y asegurar la salud financiera de organizaciones públicas o privadas."
+                titulo: "ECONOMÍA SOCIAL - Mención Contabilidad",
+                descripcion: "Destacas por tu excelente capacidad de análisis, pensamiento lógico y gusto por las estructuras numéricas. Tienes el perfil ideal para manejar balances, llevar registros financieros precisos, diseñar presupuestos y asegurar la transparencia monetaria de cualquier proyecto u organización."
             }
         };
 
@@ -416,6 +416,7 @@
         let respuestasEstudiante = [];
         let preguntaActualIdx = 0;
 
+        // Base de Datos en LocalStorage
         let baseDatosHistorica = JSON.parse(localStorage.getItem("bd_orientacion_auxiliadora")) || [];
 
         const frasesMotivacionales = {
@@ -449,8 +450,8 @@
         function iniciarTest(e) {
             e.preventDefault();
             estudianteActual = {
-                nombre: document.getElementById("nombre").value,
-                cedula: document.getElementById("cedula").value,
+                nombre: document.getElementById("nombre").value.trim(),
+                cedula: document.getElementById("cedula").value.trim(),
                 edad: document.getElementById("edad").value,
                 seccion: document.getElementById("seccion").value,
                 fecha: new Date().toLocaleString("es-VE", { timeZone: "America/Caracas" })
@@ -473,151 +474,142 @@
 
             const contenedor = document.getElementById("opciones-contenedor");
             contenedor.innerHTML = "";
+            
             preg.opciones.forEach(opcion => {
                 const boton = document.createElement("button");
                 boton.className = "w-full text-left p-4 rounded-2xl border-2 border-slate-200 hover:border-sky-500 hover:bg-slate-50 transition duration-250 focus:outline-none flex items-start gap-3 text-sm text-slate-700 font-medium active:scale-[0.99]";
-                boton.onclick = () => procesarRespuesta(opcion.valor);
-                boton.innerHTML = `
-                    <span class="w-5 h-5 flex items-center justify-center rounded-full bg-sky-100 text-sky-600 text-[10px] font-bold mt-0.5 shrink-0">✓</span>
-                    <span>${opcion.texto}</span>
-                `;
+                boton.innerHTML = `<span class="inline-block px-2.5 py-1 bg-slate-100 text-slate-500 rounded-lg text-xs font-bold shrink-0">➜</span> <span>${opcion.texto}</span>`;
+                boton.onclick = () => registrarRespuesta(opcion.valor);
                 contenedor.appendChild(boton);
             });
         }
 
-        function procesarRespuesta(valor) {
+        function registrarRespuesta(valor) {
             respuestasEstudiante.push(valor);
             preguntaActualIdx++;
-
+            
             if (preguntaActualIdx < preguntas.length) {
                 cargarPregunta();
             } else {
-                calcularResultados();
+                finalizarTest();
             }
         }
 
-        function calcularResultados() {
-            const conteos = { enfermeria: 0, registro: 0, administracion: 0, contabilidad: 0 };
-            respuestasEstudiante.forEach(r => conteos[r]++);
+        function finalizarTest() {
+            // Inicializar contadores de afinidad
+            let conteo = { enfermeria: 0, registro: 0, administracion: 0, contabilidad: 0 };
+            respuestasEstudiante.forEach(val => { conteo[val]++; });
 
-            const totalPreguntas = respuestasEstudiante.length;
-            const saludTotal = conteos.enfermeria + conteos.registro;
-            const ecoTotal = conteos.administracion + conteos.contabilidad;
+            // Agrupaciones por Áreas macros
+            const totalSalud = conteo.enfermeria + conteo.registro;
+            const totalEconomia = conteo.administracion + conteo.contabilidad;
+            const totalPreguntas = preguntas.length;
 
-            const porcSalud = Math.round((saludTotal / totalPreguntas) * 100);
-            const porcEco = Math.round((ecoTotal / totalPreguntas) * 100);
+            const porcSalud = Math.round((totalSalud / totalPreguntas) * 100);
+            const porcEconomia = Math.round((totalEconomia / totalPreguntas) * 100);
 
-            let mencionDominante = "enfermeria";
-            let maxPuntaje = conteos.enfermeria;
+            // Determinar la Mención Ganadora absoluta
+            let mencionGanadora = "enfermeria";
+            let maxVotos = -1;
 
-            for (const clave in conteos) {
-                if (conteos[clave] > maxPuntaje) {
-                    maxPuntaje = conteos[clave];
-                    mencionDominante = clave;
+            // Encontrar la mención individual con más votos
+            Object.keys(conteo).forEach(mencion => {
+                if (conteo[mencion] > maxVotos) {
+                    maxVotos = conteo[mencion];
+                    mencionGanadora = mencion;
+                } else if (conteo[mencion] === maxVotos) {
+                    // Desempates lógicos personalizados
+                    if (mencion === "enfermeria" && mencionGanadora === "registro") mencionGanadora = "enfermeria"; 
+                    if (mencion === "administracion" && mencionGanadora === "contabilidad") mencionGanadora = "administracion";
                 }
-            }
+            });
 
-            estudianteActual.porcSalud = porcSalud;
-            estudianteActual.porcEco = porcEco;
-            estudianteActual.mencionSugerida = perfiles[mencionDominante].titulo;
-            estudianteActual.mencionSugeridaDesc = perfiles[mencionDominante].descripcion;
+            // Guardar resultados procesados del estudiante actual
+            estudianteActual.p_salud = porcSalud;
+            estudianteActual.p_economia = porcEconomia;
+            estudianteActual.mencion = perfiles[mencionGanadora].titulo;
+            estudianteActual.descripcion = perfiles[mencionGanadora].descripcion;
 
+            // Guardar en base de datos histórica local
             baseDatosHistorica.push(estudianteActual);
             localStorage.setItem("bd_orientacion_auxiliadora", JSON.stringify(baseDatosHistorica));
 
+            // Cargar datos en los contenedores visuales de pantalla de resultados
             document.getElementById("resultado-nombre").innerText = estudianteActual.nombre;
             document.getElementById("porcentaje-salud").innerText = `${porcSalud}%`;
             document.getElementById("barra-salud").style.width = `${porcSalud}%`;
-            document.getElementById("porcentaje-economia").innerText = `${porcEco}%`;
-            document.getElementById("barra-economia").style.width = `${porcEco}%`;
+            document.getElementById("porcentaje-economia").innerText = `${porcEconomia}%`;
+            document.getElementById("barra-economia").style.width = `${porcEconomia}%`;
 
-            document.getElementById("mencion-titulo").innerText = perfiles[mencionDominante].titulo;
-            document.getElementById("mencion-descripcion").innerText = perfiles[mencionDominante].descripcion;
+            document.getElementById("mencion-titulo").innerText = estudianteActual.mencion;
+            document.getElementById("mencion-descripcion").innerText = estudianteActual.descripcion;
 
-            mostrarPantalla("pantalla-resultados");
-            actualizarPanelMotivacional("resultados");
-        }
-
-        // ================= GENERACIÓN INTEGRAL DE PDF (Optimizado para teléfonos) =================
-        function generarReportePDF() {
-            // Llenamos el contenedor "off-screen" con los datos dinámicos antes de procesarlo
+            // Preparar e inyectar valores en la plantilla de impresión PDF
             document.getElementById("pdf-nombre").innerText = estudianteActual.nombre;
             document.getElementById("pdf-cedula").innerText = estudianteActual.cedula;
             document.getElementById("pdf-edad").innerText = estudianteActual.edad;
             document.getElementById("pdf-seccion").innerText = estudianteActual.seccion;
             document.getElementById("pdf-fecha").innerText = estudianteActual.fecha;
 
-            document.getElementById("pdf-porc-salud").innerText = estudianteActual.porcSalud + '%';
-            document.getElementById("pdf-barra-salud").style.width = estudianteActual.porcSalud + '%';
-            document.getElementById("pdf-porc-economia").innerText = estudianteActual.porcEco + '%';
-            document.getElementById("pdf-barra-economia").style.width = estudianteActual.porcEco + '%';
+            document.getElementById("pdf-porc-salud").innerText = `${porcSalud}%`;
+            document.getElementById("pdf-barra-salud").style.width = `${porcSalud}%`;
+            document.getElementById("pdf-porc-economia").innerText = `${porcEconomia}%`;
+            document.getElementById("pdf-barra-economia").style.width = `${porcEconomia}%`;
 
-            document.getElementById("pdf-mencion-titulo").innerText = estudianteActual.mencionSugerida;
-            document.getElementById("pdf-mencion-desc").innerText = estudianteActual.mencionSugeridaDesc;
+            document.getElementById("pdf-mencion-titulo").innerText = estudianteActual.mencion;
+            document.getElementById("pdf-mencion-desc").innerText = estudianteActual.descripcion;
 
-            const element = document.getElementById("plantilla-pdf");
-            const nombreArchivo = 'Reporte_Vocacional_' + estudianteActual.nombre.replace(/\s+/g, '_') + '.pdf';
-
-            // Configuración óptima para teléfonos celulares
-            const opcionesPDF = {
-                margin:       10,
-                filename:     nombreArchivo,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { 
-                    scale: 2, 
-                    useCORS: true,
-                    letterRendering: true,
-                    logging: false
-                },
-                jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
-            };
-
-            // Ejecuta el guardado directamente sobre el elemento ya renderizado en el fondo
-            html2pdf().set(opcionesPDF).from(element).save();
-        }
-
-        // ================= EXPORTACIÓN REAL A EXCEL PARA EL DOCENTE =================
-        function descargarExcelCompleto() {
-            if (baseDatosHistorica.length === 0) {
-                alert("Aún no hay registros de estudiantes almacenados en este navegador.");
-                return;
-            }
-
-            const wb = XLSX.utils.book_new();
-
-            const filas = baseDatosHistorica.map(function(est, i) {
-                return {
-                    "N°": i + 1,
-                    "Fecha Evaluacion": est.fecha,
-                    "Nombre y Apellido": est.nombre,
-                    "Cedula": est.cedula,
-                    "Edad": parseInt(est.edad),
-                    "Seccion": est.seccion,
-                    "Afinidad Salud (%)": est.porcSalud,
-                    "Afinidad Economia (%)": est.porcEco,
-                    "Mencion Recomendada": est.mencionSugerida
-                };
-            });
-
-            const ws = XLSX.utils.json_to_sheet(filas);
-
-            const objectKeys = Object.keys(filas[0]);
-            ws["!cols"] = objectKeys.map(function(key) {
-                return {
-                    wch: Math.max(...filas.map(function(row) {
-                        return row[key] ? row[key].toString().length : 0;
-                    }), key.length) + 3
-                };
-            });
-
-            XLSX.utils.book_append_sheet(wb, ws, "Base de Datos ETPMA");
-            XLSX.writeFile(wb, 'BD_Orientacion_Maria_Auxiliadora.xlsx');
+            // Mostrar pantalla resultados y refrescar panel motivación
+            mostrarPantalla("pantalla-resultados");
+            actualizarPanelMotivacional("resultados");
         }
 
         function reiniciarTest() {
             document.getElementById("formulario-registro").reset();
             mostrarPantalla("pantalla-registro");
             actualizarPanelMotivacional("registro");
+        }
+
+        function generarReportePDF() {
+            const elemento = document.getElementById("plantilla-pdf");
+            const opciones = {
+                margin: 0,
+                filename: `Reporte_Vocacional_${estudianteActual.cedula || 'Estudiante'}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, logging: false },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Ejecuta html2pdf apuntando a la estructura oculta de rendering
+            html2pdf().set(opciones).from(elemento).save();
+        }
+
+        function descargarExcelCompleto() {
+            if (baseDatosHistorica.length === 0) {
+                alert("Aún no existen registros de pruebas en este navegador.");
+                return;
+            }
+
+            // Mapeo limpio de los nombres de cabeceras para el archivo de Excel
+            const registrosFormateados = baseDatosHistorica.map((reg, index) => ({
+                "N°": index + 1,
+                "Fecha de Evaluación": reg.fecha,
+                "Nombre y Apellido": reg.nombre,
+                "Cédula": reg.cedula,
+                "Edad": reg.edad,
+                "Sección": reg.seccion,
+                "Afinidad Salud (%)": reg.p_salud,
+                "Afinidad Economía (%)": reg.p_economia,
+                "Mención Sugerida": reg.mencion
+            }));
+
+            // Convertir JSON a Hoja de Excel y descargar
+            const worksheet = XLSX.utils.json_to_sheet(registrosFormateados);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Resultados");
+
+            // Guardar con nombre descriptivo de la institución
+            XLSX.writeFile(workbook, `BD_Orientacion_Vocacional_ETPMA.xlsx`);
         }
     </script>
 </body>
